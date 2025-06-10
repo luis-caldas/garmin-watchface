@@ -32,7 +32,7 @@ in pkgs.mkShell {
   packages = [
 
     # Java
-    openjdk
+    pkgs.openjdk
 
     # SDK Manager
     SDKManager

@@ -3,3 +3,11 @@
 *.der
 *.key
 
+# Garmin
+/bin
+/gen
+/external-mir
+/internal-mir
+
+# Build
+*.prg
