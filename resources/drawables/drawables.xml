@@ -1,10 +1,11 @@
 <drawables xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
     <bitmap id="App" filename="app.svg" dithering="none"/>
-    <bitmap id="Bell" filename="bell.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
-    <bitmap id="Bluetooth" filename="bluetooth.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
-    <bitmap id="Location" filename="location.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
-    <bitmap id="Message" filename="message.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
-    <bitmap id="Pulse" filename="pulse.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
-    <bitmap id="Sun" filename="sun.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
-    <bitmap id="Week" filename="week.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
+    <bitmap id="Bell" filename="bell.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="20" scaleY="20"/>
+    <bitmap id="Bluetooth" filename="bluetooth.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="20" scaleY="20"/>
+    <bitmap id="Location" filename="location.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="20" scaleY="20"/>
+    <bitmap id="Message" filename="message.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="20" scaleY="20"/>
+    <bitmap id="Progress" filename="progress.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="20" scaleY="20"/>
+    <bitmap id="Pulse" filename="pulse.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="20" scaleY="20"/>
+    <bitmap id="Sun" filename="sun.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="20" scaleY="20"/>
+    <bitmap id="Week" filename="week.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="20" scaleY="20"/>
 </drawables>
