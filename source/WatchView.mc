@@ -30,21 +30,28 @@ class WatchView extends WatchUi.WatchFace {
     const STEP = 100.0;
 
     // Visual
-    const COLOUR_LINE = Graphics.COLOR_DK_GRAY;
-    const COLOUR_BACKGROUND = Graphics.COLOR_DK_GRAY;
+    const COLOUR_LINE = 0x1A1616;
+    const COLOUR_SECONDARY = 0x0A0A06;
+    const COLOUR_BACKGROUND = Graphics.COLOR_BLACK;
     const COLOUR_DEFAULT = Graphics.COLOR_WHITE;
     const COLOUR_ACCENT = Graphics.COLOR_WHITE;
 
     const WIDTH_LINE = 3.0;
 
+    const LINE_THICKNESS = 2.0;
+
     const ICON_SIZE = 20;
 
-    const BOTTOM_ICON_SPACING = 5.0;
-    const BOTTOM_ICON_EDGE = 30.0;
+    const BOTTOM_ICON_SPACING = 1.0;
+    const BOTTOM_ICON_EDGE = 24.0;
     const BOTTOM_ICON_OFFSET = 12.0;
 
-    const DATE_SPACING = 16.5;
-    const DATE_EDGE = 10.0;
+    const MIDDLE_ICON_SPACING = BOTTOM_ICON_SPACING;
+    const MIDDLE_ICON_EDGE = 17.0;
+    const MIDDLE_ICON_OFFSET = 20.0;
+
+    const DATE_SPACING = 20.0;
+    const DATE_EDGE = 7.0;
 
     // Data
     const MILITARY_TIMEZONES = {
@@ -81,19 +88,9 @@ class WatchView extends WatchUi.WatchFace {
      */
 
     // Fonts
-    var font_10 = null;
-    var font_11 = null;
-    var font_12 = null;
-    var font_14 = null;
-    var font_16 = null;
-    var font_24 = null;
     var font_32 = null;
-    var font_40 = null;
     var font_48 = null;
-    var font_56 = null;
-    var font_64 = null;
-    var font_96 = null;
-    var font_128 = null;
+    var font_watch = null;
 
     // Bitmaps
     var bitmap_pulse = null;
@@ -101,6 +98,9 @@ class WatchView extends WatchUi.WatchFace {
     var bitmap_message = null;
     var bitmap_week = null;
     var bitmap_progress = null;
+    var bitmap_bolt = null;
+    var bitmap_calorie = null;
+    var bitmap_step = null;
 
     // View Sizes
     var width = null;
@@ -165,19 +165,9 @@ class WatchView extends WatchUi.WatchFace {
 
     function initialiseFonts() {
         // All of them
-        font_10 = WatchUi.loadResource(Rez.Fonts.Courier10);
-        font_11 = WatchUi.loadResource(Rez.Fonts.Courier11);
-        font_12 = WatchUi.loadResource(Rez.Fonts.Courier12);
-        font_14 = WatchUi.loadResource(Rez.Fonts.Courier14);
-        font_16 = WatchUi.loadResource(Rez.Fonts.Courier16);
-        font_24 = WatchUi.loadResource(Rez.Fonts.Courier24);
         font_32 = WatchUi.loadResource(Rez.Fonts.Courier32);
-        font_40 = WatchUi.loadResource(Rez.Fonts.Courier40);
         font_48 = WatchUi.loadResource(Rez.Fonts.Courier48);
-        font_56 = WatchUi.loadResource(Rez.Fonts.Courier56);
-        font_64 = WatchUi.loadResource(Rez.Fonts.Courier64);
-        font_96 = WatchUi.loadResource(Rez.Fonts.Courier96);
-        font_128 = WatchUi.loadResource(Rez.Fonts.Courier128);
+        font_watch = WatchUi.loadResource(Rez.Fonts.CourierWatch);
     }
 
     function initialiseBitmaps() {
@@ -186,6 +176,9 @@ class WatchView extends WatchUi.WatchFace {
         bitmap_message = WatchUi.loadResource(Rez.Drawables.Message);
         bitmap_week = WatchUi.loadResource(Rez.Drawables.Week);
         bitmap_progress = WatchUi.loadResource(Rez.Drawables.Progress);
+        bitmap_bolt = WatchUi.loadResource(Rez.Drawables.Bolt);
+        bitmap_calorie = WatchUi.loadResource(Rez.Drawables.Calorie);
+        bitmap_step = WatchUi.loadResource(Rez.Drawables.Step);
     }
 
     /*
@@ -238,12 +231,15 @@ class WatchView extends WatchUi.WatchFace {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
         // Separations
-        separationLine(dc, 20);
-        separationLine(dc, 38);
-        separationLine(dc, 62);
-        inBetweenSeparationLines(dc, 62, 71, 50);
-        separationLine(dc, 71);
-        separationLine(dc, 83);
+        edgeRectangle(dc, false, false, 15, 50, 65);
+        edgeRectangle(dc, true, false, 16, 35, 65);
+        edgeRectangle(dc, false, true, 15, 65 - LINE_THICKNESS, 65);
+        edgeRectangle(dc, true, true, 16, 37 - LINE_THICKNESS, 37);
+        edgeRectangle(dc, true, true, 16, 65 - LINE_THICKNESS, 65);
+        separationRectangle(dc, 20, 35);
+        separationRectangle(dc, 65, 76);
+        separationRectangle(dc, 84, 93);
+        inBetweenSeparationRectangle(dc, 65, 76, 49, LINE_THICKNESS);
 
         // Sunrise & Sunset
         drawSunriseSunset(dc, moment);
@@ -269,6 +265,15 @@ class WatchView extends WatchUi.WatchFace {
         // Body Battery
         drawBodyBattery(dc);
 
+        // Calorie
+        drawCalorie(dc);
+
+        // Stress
+        drawStress(dc);
+
+        // Steps
+        drawSteps(dc);
+
     }
 
     /*
@@ -282,13 +287,13 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             width / 2,
             height / 2,
-            font_128,
+            font_watch,
             formatMoment(time),
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
         // Offsets
-        var offset = 4.5;
-        var edge = 13;
+        var offset = 6.5;
+        var edge = 7;
 
         // Seconds
         dc.drawText(
@@ -310,6 +315,10 @@ class WatchView extends WatchUi.WatchFace {
 
     function drawDate(dc, moment) {
 
+        // Spacing
+        var interspace = 4;
+        var size = dc.getTextWidthInPixels("--", font_48);
+
         // Get Format
         var today = Gregorian.info(moment, Time.FORMAT_SHORT);
 
@@ -318,12 +327,22 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             coordinator_x(DATE_EDGE),
             (height / 2) + coordinator_y(DATE_SPACING),
-            font_32,
-            Lang.format("$1$ $2$ $3$", [
-                today.year.format("%04d"),
-                today.month.format("%02d"),
-                today.day.format("%02d")
-            ]),
+            font_48,
+            (today.year % 100).format("%02d"),
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+        );
+        dc.drawText(
+            coordinator_x(DATE_EDGE) + size + coordinator_y(interspace),
+            (height / 2) + coordinator_y(DATE_SPACING),
+            font_48,
+            today.month.format("%02d"),
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+        );
+        dc.drawText(
+            coordinator_x(DATE_EDGE) + ((size + coordinator_y(interspace)) * 2),
+            (height / 2) + coordinator_y(DATE_SPACING),
+            font_48,
+            today.day.format("%02d"),
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 
@@ -386,8 +405,8 @@ class WatchView extends WatchUi.WatchFace {
     function drawWeek(dc, moment) {
 
         // Spacing
-        var written = 38;
-        var icon = 25;
+        var written = 37;
+        var icon = 23;
 
         // Week Data
         var week = Gregorian.info(moment, Time.FORMAT_MEDIUM);
@@ -406,7 +425,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             width - coordinator_x(written),
             (height / 2) + coordinator_y(DATE_SPACING),
-            font_32,
+            font_48,
             week.day_of_week,
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
         );
@@ -415,7 +434,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             width - coordinator_x(DATE_EDGE),
             (height / 2) + coordinator_y(DATE_SPACING),
-            font_32,
+            font_48,
             iso_week_number(week_year.year, week_year.month, week_year.day),
             Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
         );
@@ -425,8 +444,8 @@ class WatchView extends WatchUi.WatchFace {
     function drawSunriseSunset(dc, moment) {
 
         // Spacing
-        var spacing = 6;
-        var edge = 11;
+        var spacing = 8;
+        var edge = 8;
 
         // Strings
         var sunrise = null;
@@ -467,16 +486,80 @@ class WatchView extends WatchUi.WatchFace {
 
     }
 
+    function drawSteps(dc) {
+
+        var offset = 17;
+
+        dc.drawBitmap(
+            width - coordinator_x(MIDDLE_ICON_EDGE + offset + MIDDLE_ICON_SPACING) - (ICON_SIZE / 2),
+            height - coordinator_y(MIDDLE_ICON_OFFSET) - (ICON_SIZE / 2.0),
+            bitmap_step
+        );
+
+        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
+
+        dc.drawText(
+            width - coordinator_x(MIDDLE_ICON_EDGE + offset) + (ICON_SIZE / 2),
+            height - coordinator_y(MIDDLE_ICON_OFFSET),
+            font_32,
+            // ,
+            31001,
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+        );
+
+    }
+
+    function drawCalorie(dc) {
+
+        var offset = 21;
+
+        dc.drawBitmap(
+            coordinator_x(MIDDLE_ICON_EDGE + offset) - (ICON_SIZE / 2),
+            height - coordinator_y(MIDDLE_ICON_OFFSET) - (ICON_SIZE / 2.0),
+            bitmap_calorie
+        );
+
+        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
+
+        dc.drawText(
+            coordinator_x(MIDDLE_ICON_EDGE + offset + MIDDLE_ICON_SPACING) + (ICON_SIZE / 2),
+            height - coordinator_y(MIDDLE_ICON_OFFSET),
+            font_32,
+            // ,
+            1895,
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+        );
+
+    }
+
+    function drawStress(dc) {
+
+        dc.drawBitmap(
+            coordinator_x(MIDDLE_ICON_EDGE) - (ICON_SIZE / 2),
+            height - coordinator_y(MIDDLE_ICON_OFFSET) - (ICON_SIZE / 2.0),
+            bitmap_bolt
+        );
+
+        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
+
+        dc.drawText(
+            coordinator_x(MIDDLE_ICON_EDGE + MIDDLE_ICON_SPACING) + (ICON_SIZE / 2),
+            height - coordinator_y(MIDDLE_ICON_OFFSET),
+            font_32,
+            // ,
+            69,
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+        );
+
+    }
+
     function drawNotifications(dc, device) {
 
         // Icon Compensation
-        var compensationX = 5.0;
         var compensationY = 0.5;
 
-        dc.setColor(COLOUR_BACKGROUND, Graphics.COLOR_TRANSPARENT);
-
         dc.drawBitmap(
-            coordinator_x(BOTTOM_ICON_EDGE) - coordinator_x(BOTTOM_ICON_SPACING + compensationX) + (ICON_SIZE / 2.0),
+            coordinator_x(BOTTOM_ICON_EDGE) - (ICON_SIZE / 2),
             height - coordinator_y(BOTTOM_ICON_OFFSET - compensationY) - (ICON_SIZE / 2.0),
             bitmap_message
         );
@@ -484,11 +567,11 @@ class WatchView extends WatchUi.WatchFace {
         dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
-            coordinator_x(BOTTOM_ICON_EDGE) + coordinator_x(BOTTOM_ICON_SPACING),
+            coordinator_x(BOTTOM_ICON_EDGE + BOTTOM_ICON_SPACING) + (ICON_SIZE / 2),
             height - coordinator_y(BOTTOM_ICON_OFFSET),
             font_32,
             device.notificationCount,
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 
     }
@@ -517,13 +600,11 @@ class WatchView extends WatchUi.WatchFace {
         }
 
         // Icon Compensation
-        var compensationX = 5.0;
+        var offset = 9.0;
         var compensationY = 0.5;
 
-        dc.setColor(COLOUR_BACKGROUND, Graphics.COLOR_TRANSPARENT);
-
         dc.drawBitmap(
-            width - coordinator_x(BOTTOM_ICON_EDGE) - coordinator_x(BOTTOM_ICON_SPACING + compensationX) + (ICON_SIZE / 2.0),
+            width - coordinator_x(BOTTOM_ICON_EDGE + BOTTOM_ICON_SPACING + offset) - (ICON_SIZE / 2.0),
             height - coordinator_y(BOTTOM_ICON_OFFSET - compensationY) - (ICON_SIZE / 2.0),
             bitmap_progress
         );
@@ -531,11 +612,11 @@ class WatchView extends WatchUi.WatchFace {
         dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
-            width - coordinator_x(BOTTOM_ICON_EDGE) + coordinator_x(BOTTOM_ICON_SPACING),
+            width - coordinator_x(BOTTOM_ICON_EDGE + offset) + (ICON_SIZE / 2.0) + coordinator_x(BOTTOM_ICON_SPACING),
             height - coordinator_y(BOTTOM_ICON_OFFSET),
             font_32,
             battery,
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 
     }
@@ -576,22 +657,23 @@ class WatchView extends WatchUi.WatchFace {
 
     function drawHeart(dc) {
 
-        dc.setColor(COLOUR_BACKGROUND, Graphics.COLOR_TRANSPARENT);
+        var compensationY = 0.5;
+        var offset = 2.0;
 
         dc.drawBitmap(
-            (width / 2) - coordinator_x(BOTTOM_ICON_SPACING) - (ICON_SIZE / 2.0),
-            height - coordinator_y(BOTTOM_ICON_OFFSET) - (ICON_SIZE / 2.0),
+            (width / 2) - ICON_SIZE - coordinator_x(BOTTOM_ICON_SPACING + offset + (BOTTOM_ICON_SPACING / 2)),
+            height - coordinator_y(BOTTOM_ICON_OFFSET - compensationY) - (ICON_SIZE / 2.0),
             bitmap_pulse
         );
 
         dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
-            (width / 2) + coordinator_x(BOTTOM_ICON_SPACING),
+            (width / 2) - coordinator_x(offset) + coordinator_x(BOTTOM_ICON_SPACING / 2),
             height - coordinator_y(BOTTOM_ICON_OFFSET),
             font_32,
             getHeart(),
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 
     }
@@ -605,7 +687,7 @@ class WatchView extends WatchUi.WatchFace {
         var battery_y = 4;
 
         // Offset from edge
-        var edge = 3;
+        var edge = 1.5;
 
         // Battery Ratio
         var ratio = (battery_x * 2) * (battery / 100);
@@ -639,6 +721,61 @@ class WatchView extends WatchUi.WatchFace {
             height - coordinator_y((battery_y / 2) + edge + 1)
         );
 
+    }
+
+    function edgeRectangle(dc, left, black, size, beginning, end) {
+
+        var start = null;
+        var colour = COLOUR_LINE;
+
+        // Which Edge
+        if (left) {
+            start = 0;
+        } else {
+            start = width - coordinator_x(size);
+        }
+
+        // If Black
+        if (black) {
+            colour = COLOUR_BACKGROUND;
+        }
+
+        // Draw Separation Rectangle
+        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+
+        dc.fillRectangle(
+            start,
+            coordinator_y(beginning),
+            coordinator_x(size),
+            coordinator_y(end - beginning)
+        );
+
+    }
+
+    function inBetweenSeparationRectangle(dc, start, end, location, thickness) {
+
+        // Draw Separation Rectangle
+        dc.setColor(COLOUR_BACKGROUND, Graphics.COLOR_TRANSPARENT);
+
+        dc.fillRectangle(
+            coordinator_x(location + (thickness / 2.0)),
+            coordinator_y(start),
+            coordinator_x(thickness),
+            coordinator_y(end - start)
+        );
+    }
+
+    function separationRectangle(dc, start, end) {
+
+        // Draw Separation Rectangle
+        dc.setColor(COLOUR_LINE, Graphics.COLOR_TRANSPARENT);
+
+        dc.fillRectangle(
+            0,
+            coordinator_y(start),
+            width,
+            coordinator_y(end - start)
+        );
     }
 
     function separationLine(dc, index) {
