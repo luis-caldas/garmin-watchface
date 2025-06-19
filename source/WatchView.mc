@@ -235,9 +235,9 @@ class WatchView extends WatchUi.WatchFace {
         separationLine(dc, 20);
         separationLine(dc, 38);
         separationLine(dc, 62);
+        inBetweenSeparationLines(dc, 62, 71, 50);
         separationLine(dc, 71);
         separationLine(dc, 80);
-        // inBetweenSeparationLines(dc, 38, 65, 18.5);
 
         // Sunrise & Sunset
         drawSunriseSunset(dc, moment);
@@ -299,7 +299,7 @@ class WatchView extends WatchUi.WatchFace {
     function drawDate(dc, moment) {
 
         // Spacing
-        var edge = 8;
+        var edge = 10;
         var spacing = 16.5;
 
         // Get Format
@@ -312,11 +312,10 @@ class WatchView extends WatchUi.WatchFace {
             coordinator_x(edge),
             (height / 2) + coordinator_y(spacing),
             font_32,
-            Lang.format("$1$ $2$ $3$ $4$", [
+            Lang.format("$1$ $2$ $3$", [
                 today.year.format("%04d"),
                 today.month.format("%02d"),
-                today.day.format("%02d"),
-                week.day_of_week
+                today.day.format("%02d")
             ]),
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
