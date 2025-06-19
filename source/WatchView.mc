@@ -7,6 +7,7 @@ using Toybox.Graphics;
 using Toybox.WatchUi;
 using Toybox.System;
 using Toybox.Sensor;
+using Toybox.SensorLogging;
 using Toybox.Activity;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
@@ -99,6 +100,7 @@ class WatchView extends WatchUi.WatchFace {
     var bitmap_sun = null;
     var bitmap_message = null;
     var bitmap_week = null;
+    var bitmap_progress = null;
 
     // View Sizes
     var width = null;
@@ -183,6 +185,7 @@ class WatchView extends WatchUi.WatchFace {
         bitmap_sun = WatchUi.loadResource(Rez.Drawables.Sun);
         bitmap_message = WatchUi.loadResource(Rez.Drawables.Message);
         bitmap_week = WatchUi.loadResource(Rez.Drawables.Week);
+        bitmap_progress = WatchUi.loadResource(Rez.Drawables.Progress);
     }
 
     /*
@@ -262,6 +265,9 @@ class WatchView extends WatchUi.WatchFace {
 
         // Heart
         drawHeart(dc);
+
+        // Body Battery
+        drawBodyBattery(dc);
 
     }
 
@@ -487,6 +493,52 @@ class WatchView extends WatchUi.WatchFace {
 
     }
 
+    function getBodyBattery() {
+
+        // Check Compatibility
+        if (Toybox.SensorHistory has :getBodyBatteryHistory) {
+            // Get the Latest Sample
+            return Toybox.SensorHistory
+                .getBodyBatteryHistory({})
+                .next()
+                .data
+                .toNumber();
+        }
+        return null;
+
+    }
+
+    function drawBodyBattery(dc) {
+
+        // Get Battery
+        var battery = getBodyBattery();
+        if (battery == null) {
+            battery = "-";
+        }
+
+        // Icon Compensation
+        var compensationX = 5.0;
+        var compensationY = 0.5;
+
+        dc.setColor(COLOUR_BACKGROUND, Graphics.COLOR_TRANSPARENT);
+
+        dc.drawBitmap(
+            width - coordinator_x(BOTTOM_ICON_EDGE) - coordinator_x(BOTTOM_ICON_SPACING + compensationX) + (ICON_SIZE / 2.0),
+            height - coordinator_y(BOTTOM_ICON_OFFSET - compensationY) - (ICON_SIZE / 2.0),
+            bitmap_progress
+        );
+
+        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
+
+        dc.drawText(
+            width - coordinator_x(BOTTOM_ICON_EDGE) + coordinator_x(BOTTOM_ICON_SPACING),
+            height - coordinator_y(BOTTOM_ICON_OFFSET),
+            font_32,
+            battery,
+            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+        );
+
+    }
 
     function getHeart() {
 
