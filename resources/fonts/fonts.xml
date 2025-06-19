@@ -1,2 +1,16 @@
-<fonts>
-</fonts>
+<resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <font id="Courier10" filename="courier-10.fnt" antialias="true"/>
+    <font id="Courier11" filename="courier-11.fnt" antialias="true"/>
+    <font id="Courier12" filename="courier-12.fnt" antialias="true"/>
+    <font id="Courier14" filename="courier-14.fnt" antialias="true"/>
+    <font id="Courier16" filename="courier-16.fnt" antialias="true"/>
+    <font id="Courier24" filename="courier-24.fnt" antialias="true"/>
+    <font id="Courier32" filename="courier-32.fnt" antialias="true"/>
+    <font id="Courier40" filename="courier-40.fnt" antialias="true"/>
+    <font id="Courier48" filename="courier-48.fnt" antialias="true"/>
+    <font id="Courier56" filename="courier-56.fnt" antialias="true"/>
+    <font id="Courier64" filename="courier-64.fnt" antialias="true"/>
+    <font id="Courier96" filename="courier-96.fnt" antialias="true"/>
+    <font id="Courier128" filename="courier-128.fnt" antialias="true"/>
+</resources>
