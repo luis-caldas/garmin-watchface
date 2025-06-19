@@ -95,6 +95,7 @@ class WatchView extends WatchUi.WatchFace {
     var bitmap_pulse = null;
     var bitmap_sun = null;
     var bitmap_message = null;
+    var bitmap_week = null;
 
     // View Sizes
     var width = null;
@@ -178,6 +179,7 @@ class WatchView extends WatchUi.WatchFace {
         bitmap_pulse = WatchUi.loadResource(Rez.Drawables.Pulse);
         bitmap_sun = WatchUi.loadResource(Rez.Drawables.Sun);
         bitmap_message = WatchUi.loadResource(Rez.Drawables.Message);
+        bitmap_week = WatchUi.loadResource(Rez.Drawables.Week);
     }
 
     /*
@@ -243,6 +245,9 @@ class WatchView extends WatchUi.WatchFace {
         // Time
         drawDigitalTime(dc, moment);
 
+        // Date
+        drawDate(dc, moment);
+
         // Battery
         drawBattery(dc);
 
@@ -291,14 +296,31 @@ class WatchView extends WatchUi.WatchFace {
 
     }
 
-    function drawDateInfo(dc, moment, x, y) {
-        // dc.setFont(Graphics.FONT_SMALL);
-        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        var today = Gregorian.info(moment, Time.FORMAT_MEDIUM);
-        // var dayName = Time.getDayOfWeekName(now.dayOfWeek);
-        // dc.drawText(x, y, G.FONT_SMALL, "Day: " + dayName);
-        // dc.drawText(x, y + 15, G.FONT_SMALL, "Week: " + now.week + " | DoY: " + now.dayOfYear);
-        dc.drawText(x, y + 30, Graphics.FONT_SMALL, "Date: " + today.day + "/" + today.month + "/" + today.year);
+    function drawDate(dc, moment) {
+
+        // Spacing
+        var edge = 8;
+        var spacing = 16.5;
+
+        // Get Format
+        var today = Gregorian.info(moment, Time.FORMAT_SHORT);
+        var week = Gregorian.info(moment, Time.FORMAT_MEDIUM);
+
+        // General
+        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(
+            coordinator_x(edge),
+            (height / 2) + coordinator_y(spacing),
+            font_32,
+            Lang.format("$1$ $2$ $3$ $4$", [
+                today.year.format("%04d"),
+                today.month.format("%02d"),
+                today.day.format("%02d"),
+                week.day_of_week
+            ]),
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+        );
+
     }
 
     function drawSunriseSunset(dc, moment) {

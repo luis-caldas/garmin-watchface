@@ -6,4 +6,5 @@
     <bitmap id="Message" filename="message.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
     <bitmap id="Pulse" filename="pulse.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
     <bitmap id="Sun" filename="sun.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
+    <bitmap id="Week" filename="week.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="32" scaleY="32"/>
 </drawables>
