@@ -34,6 +34,7 @@ class WatchView extends WatchUi.WatchFace {
     const COLOUR_SECONDARY = 0x0A0A06;
     const COLOUR_BACKGROUND = Graphics.COLOR_BLACK;
     const COLOUR_DEFAULT = Graphics.COLOR_WHITE;
+    const COLOUR_DEFAULT_LPM = 0xD0D0D0;
     const COLOUR_ACCENT = Graphics.COLOR_WHITE;
 
     const WIDTH_LINE = 3.0;
@@ -86,6 +87,9 @@ class WatchView extends WatchUi.WatchFace {
     /*
      * Variables
      */
+
+    // Low Power Mode
+    var lpm = false;
 
     // Fonts
     var font_32 = null;
@@ -195,17 +199,47 @@ class WatchView extends WatchUi.WatchFace {
         initialiseBitmaps();
     }
 
+    // Power Modes
+
+    function onEnterSleep() {
+        lpm = true;
+    }
+
+    function onExitSleep() {
+        lpm = false;
+    }
+
     // Updates
 
-    function onPartialUpdate(dc) {
-        myUpdate(dc, true);
-    }
-
     function onUpdate(dc) {
-        myUpdate(dc, false);
+        if (!lpm) {
+            myUpdate(dc);
+        } else {
+            myLPMUpdate(dc);
+        }
     }
 
-    function myUpdate(dc, partial) {
+    function onPartialUpdate(dc) {
+        onUpdate(dc);
+    }
+
+    function myLPMUpdate(dc) {
+
+        // Redraw Layout
+        View.onUpdate(dc);
+
+        // Update Sizing
+        extract(dc);
+
+        // Generally Used
+        var moment = Time.now();
+
+        // Only Time
+        drawTime(dc, moment, true);
+
+    }
+
+    function myUpdate(dc) {
 
         /*
          * Setup
@@ -219,6 +253,7 @@ class WatchView extends WatchUi.WatchFace {
 
         // Generally Used
         var moment = Time.now();
+        var monitor = ActivityMonitor.getInfo();
 
         // Device
         var device = System.getDeviceSettings();
@@ -241,16 +276,14 @@ class WatchView extends WatchUi.WatchFace {
         separationRectangle(dc, 84, 93);
         inBetweenSeparationRectangle(dc, 65, 76, 49, LINE_THICKNESS);
 
-        // Sunrise & Sunset
-        drawSunriseSunset(dc, moment);
-
         // Time
-        drawDigitalTime(dc, moment);
+        drawTime(dc, moment, false);
+        drawSecondsTimezone(dc, moment);
 
         // Date
         drawDate(dc, moment);
 
-        // Weel
+        // Week
         drawWeek(dc, moment);
 
         // Battery
@@ -259,6 +292,9 @@ class WatchView extends WatchUi.WatchFace {
         // Notifications
         drawNotifications(dc, device);
 
+        // Sunrise & Sunset
+        drawSunriseSunset(dc, moment);
+
         // Heart
         drawHeart(dc);
 
@@ -266,13 +302,13 @@ class WatchView extends WatchUi.WatchFace {
         drawBodyBattery(dc);
 
         // Calorie
-        drawCalorie(dc);
+        drawCalorie(dc, monitor);
 
         // Stress
-        drawStress(dc);
+        drawStress(dc, monitor);
 
         // Steps
-        drawSteps(dc);
+        drawSteps(dc, monitor);
 
     }
 
@@ -280,10 +316,17 @@ class WatchView extends WatchUi.WatchFace {
      * Custom
      */
 
-    function drawDigitalTime(dc, time) {
+    function drawTime(dc, time, lpm) {
+
+        var colour = COLOUR_DEFAULT;
+
+        // Low Power
+        if (lpm) {
+            colour = COLOUR_DEFAULT_LPM;
+        }
 
         // Hours and Minutes
-        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
         dc.drawText(
             width / 2,
             height / 2,
@@ -291,9 +334,15 @@ class WatchView extends WatchUi.WatchFace {
             formatMoment(time),
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
+    }
+
+    function drawSecondsTimezone(dc, time) {
+
         // Offsets
         var offset = 6.5;
         var edge = 7;
+
+        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
 
         // Seconds
         dc.drawText(
@@ -486,7 +535,7 @@ class WatchView extends WatchUi.WatchFace {
 
     }
 
-    function drawSteps(dc) {
+    function drawSteps(dc, monitor) {
 
         var offset = 17;
 
@@ -502,14 +551,13 @@ class WatchView extends WatchUi.WatchFace {
             width - coordinator_x(MIDDLE_ICON_EDGE + offset) + (ICON_SIZE / 2),
             height - coordinator_y(MIDDLE_ICON_OFFSET),
             font_32,
-            // ,
-            31001,
+            monitor.steps,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 
     }
 
-    function drawCalorie(dc) {
+    function drawCalorie(dc, monitor) {
 
         var offset = 21;
 
@@ -525,14 +573,13 @@ class WatchView extends WatchUi.WatchFace {
             coordinator_x(MIDDLE_ICON_EDGE + offset + MIDDLE_ICON_SPACING) + (ICON_SIZE / 2),
             height - coordinator_y(MIDDLE_ICON_OFFSET),
             font_32,
-            // ,
-            1895,
+            monitor.calories,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 
     }
 
-    function drawStress(dc) {
+    function drawStress(dc, monitor) {
 
         dc.drawBitmap(
             coordinator_x(MIDDLE_ICON_EDGE) - (ICON_SIZE / 2),
@@ -546,8 +593,7 @@ class WatchView extends WatchUi.WatchFace {
             coordinator_x(MIDDLE_ICON_EDGE + MIDDLE_ICON_SPACING) + (ICON_SIZE / 2),
             height - coordinator_y(MIDDLE_ICON_OFFSET),
             font_32,
-            // ,
-            69,
+            monitor.stressScore,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 
