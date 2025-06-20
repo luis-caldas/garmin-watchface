@@ -743,8 +743,6 @@ class WatchView extends WatchUi.WatchFace {
         // Battery Ratio
         var ratio = (battery_x * 2) * (battery / 100);
 
-        // TODO ? Add Colour Information ?
-
         // Battery Colour
         var max = 0xFF / 2;
         var colour = ((max * (battery / 100)) + max).toNumber();
