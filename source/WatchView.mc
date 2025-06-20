@@ -30,7 +30,7 @@ class WatchView extends WatchUi.WatchFace {
     const STEP = 100.0;
 
     // Visual
-    const COLOUR_LINE = 0x262020;
+    const COLOUR_LINE = 0x161010;
     const COLOUR_SECONDARY = 0x0A0A06;
     const COLOUR_BACKGROUND = Graphics.COLOR_BLACK;
     const COLOUR_DEFAULT = Graphics.COLOR_WHITE;
@@ -53,6 +53,8 @@ class WatchView extends WatchUi.WatchFace {
 
     const DATE_SPACING = 26.0;
     const DATE_INTERSPACE = 12.0;
+
+    const SPACING_LPM = 18.0;
 
     const WEEK_SPACING = 13.0;
     const WEEK_INTERSPACE = 7.0;
@@ -186,10 +188,10 @@ class WatchView extends WatchUi.WatchFace {
         bitmap_message = WatchUi.loadResource(Rez.Drawables.Message);
         bitmap_week = WatchUi.loadResource(Rez.Drawables.Week);
         bitmap_progress = WatchUi.loadResource(Rez.Drawables.Progress);
-        bitmap_sun = WatchUi.loadResource(Rez.Drawables.Sun);
-        bitmap_bolt = WatchUi.loadResource(Rez.Drawables.Bolt);
-        bitmap_calorie = WatchUi.loadResource(Rez.Drawables.Calorie);
-        bitmap_step = WatchUi.loadResource(Rez.Drawables.Step);
+        // bitmap_sun = WatchUi.loadResource(Rez.Drawables.Sun);
+        // bitmap_bolt = WatchUi.loadResource(Rez.Drawables.Bolt);
+        // bitmap_calorie = WatchUi.loadResource(Rez.Drawables.Calorie);
+        // bitmap_step = WatchUi.loadResource(Rez.Drawables.Step);
     }
 
     /*
@@ -241,8 +243,12 @@ class WatchView extends WatchUi.WatchFace {
         // Generally Used
         var moment = Time.now();
 
-        // Only Time
+        // Time
         drawTime(dc, moment, true);
+        // Date
+        drawDate(dc, moment, true);
+        // Week
+        drawWeek(dc, moment, true);
 
     }
 
@@ -260,7 +266,7 @@ class WatchView extends WatchUi.WatchFace {
 
         // Generally Used
         var moment = Time.now();
-        var monitor = ActivityMonitor.getInfo();
+        // var monitor = ActivityMonitor.getInfo();
 
         // Device
         var device = System.getDeviceSettings();
@@ -275,7 +281,7 @@ class WatchView extends WatchUi.WatchFace {
         // Separations
         edgeRectangle(dc, false, false, 15, 50, 63);
         separationRectangle(dc, 0, 35);
-        separationRectangle(dc, 67, 88);
+        separationRectangle(dc, 65, 90);
 
         // edgeRectangle(dc, true, false, 16, 35, 65);
         // separationRectangle(dc, 20, 35);
@@ -288,10 +294,10 @@ class WatchView extends WatchUi.WatchFace {
         drawSecondsTimezone(dc, moment);
 
         // Date
-        drawDate(dc, moment);
+        drawDate(dc, moment, false);
 
         // Week
-        drawWeek(dc, moment);
+        drawWeek(dc, moment, false);
 
         // Battery
         drawBattery(dc);
@@ -299,14 +305,14 @@ class WatchView extends WatchUi.WatchFace {
         // Notifications
         drawNotifications(dc, device);
 
-        // Sunrise & Sunset
-        // drawSunriseSunset(dc, moment);
-
         // Heart
         drawHeart(dc);
 
         // Body Battery
         drawBodyBattery(dc);
+
+        // Sunrise & Sunset
+        // drawSunriseSunset(dc, moment);
 
         // Calorie
         // drawCalorie(dc, monitor);
@@ -373,7 +379,16 @@ class WatchView extends WatchUi.WatchFace {
 
     }
 
-    function drawDate(dc, moment) {
+    function drawDate(dc, moment, lpm) {
+
+        var colour = COLOUR_DEFAULT;
+        var spacing = DATE_SPACING;
+
+        // Low Power
+        if (lpm) {
+            colour = COLOUR_DEFAULT_LPM;
+            spacing = SPACING_LPM;
+        }
 
         // Offset
         var offset = 7.0;
@@ -382,24 +397,24 @@ class WatchView extends WatchUi.WatchFace {
         var today = Gregorian.info(moment, Time.FORMAT_SHORT);
 
         // General
-        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
         dc.drawText(
             (width / 2) - coordinator_x(DATE_INTERSPACE) + coordinator_x(offset),
-            coordinator_y(DATE_SPACING),
+            coordinator_y(spacing),
             font_64,
             today.year,
             Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
         );
         dc.drawText(
             (width / 2) + coordinator_x(offset),
-            coordinator_y(DATE_SPACING),
+            coordinator_y(spacing),
             font_64,
             today.month.format("%02d"),
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
         );
         dc.drawText(
             (width / 2) + coordinator_x(DATE_INTERSPACE) + coordinator_x(offset),
-            coordinator_y(DATE_SPACING),
+            coordinator_y(spacing),
             font_64,
             today.day.format("%02d"),
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -461,25 +476,34 @@ class WatchView extends WatchUi.WatchFace {
 
     }
 
-    function drawWeek(dc, moment) {
+    function drawWeek(dc, moment, lpm) {
+
+        var colour = COLOUR_DEFAULT;
+        var spacing = WEEK_SPACING;
+
+        // Low Power
+        if (lpm) {
+            colour = COLOUR_DEFAULT_LPM;
+            spacing = 100 - SPACING_LPM;
+        }
 
         // Week Data
         var week = Gregorian.info(moment, Time.FORMAT_MEDIUM);
         var week_year = Gregorian.info(moment, Time.FORMAT_SHORT);
 
-        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 
         // Icon
         dc.drawBitmap(
             (width / 2),
-            coordinator_y(WEEK_SPACING) - (ICON_SIZE / 2),
+            coordinator_y(spacing) - (ICON_SIZE / 2),
             bitmap_week
         );
 
         // Plain Weekday
         dc.drawText(
             (width / 2) - coordinator_x(WEEK_INTERSPACE),
-            coordinator_y(WEEK_SPACING),
+            coordinator_y(spacing),
             font_64,
             week.day_of_week,
             Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -488,7 +512,7 @@ class WatchView extends WatchUi.WatchFace {
         // Week of Year
         dc.drawText(
             (width / 2) + ICON_SIZE + coordinator_x(WEEK_INTERSPACE),
-            coordinator_y(WEEK_SPACING),
+            coordinator_y(spacing),
             font_64,
             iso_week_number(week_year.year, week_year.month, week_year.day),
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -652,7 +676,7 @@ class WatchView extends WatchUi.WatchFace {
         }
 
         // Icon Compensation
-        var offset = 7.0;
+        var offset = 8.0;
         var compensationY = 0.5;
 
         dc.drawBitmap(
@@ -664,7 +688,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
-            width - coordinator_x(BOTTOM_ICON_EDGE + offset) + (ICON_SIZE / 2.0) + coordinator_x(BOTTOM_ICON_SPACING),
+            width - coordinator_x(BOTTOM_ICON_EDGE + offset) + (ICON_SIZE / 2.0),
             height - coordinator_y(BOTTOM_ICON_OFFSET),
             font_48,
             battery,
@@ -712,7 +736,7 @@ class WatchView extends WatchUi.WatchFace {
         var compensationY = 0.5;
 
         dc.drawBitmap(
-            (width / 2) - ICON_SIZE - coordinator_x(BOTTOM_ICON_SPACING + BOTTOM_ICON_SPACING),
+            (width / 2) - ICON_SIZE - coordinator_x(BOTTOM_ICON_SPACING),
             height - coordinator_y(BOTTOM_ICON_OFFSET - compensationY) - (ICON_SIZE / 2.0),
             bitmap_pulse
         );
@@ -720,7 +744,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
-            (width / 2) + coordinator_x(BOTTOM_ICON_SPACING),
+            (width / 2),
             height - coordinator_y(BOTTOM_ICON_OFFSET),
             font_48,
             getHeart(),
