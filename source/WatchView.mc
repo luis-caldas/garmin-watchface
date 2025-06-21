@@ -42,6 +42,7 @@ class WatchView extends WatchUi.WatchFace {
     const BOTTOM_ROW_ICON_SPACING = 3.0;
     const BOTTOM_ROW_INTERSPACE = 10.0;
     const BOTTOM_ROW_VERTICAL = 16.0;
+    const BOTTOM_ROW_WEIGHT = 3.0;
 
     const DATE_VERTICAL = 26.0;
     const DATE_INTERSPACE = 12.0;
@@ -94,6 +95,9 @@ class WatchView extends WatchUi.WatchFace {
 
     // Generic
     const MINUTES_PER_HOUR = 60;
+
+    // Info
+    const BATTERY_CRITICAL = 10;
 
     /*************
      * Variables *
@@ -449,17 +453,27 @@ class WatchView extends WatchUi.WatchFace {
         // Update Sizing
         extract(dc);
 
+        // Needed
+        var stats = System.getSystemStats();
+        var device = System.getDeviceSettings();
+
         // Generally Used
         var moment = Time.now();
+        var clock = System.getClockTime();
         var short = Gregorian.info(moment, Time.FORMAT_SHORT);
         var medium = Gregorian.info(moment, Time.FORMAT_MEDIUM);
 
         // Time
         drawTime(dc, short, true);
+        drawSecondsTimezone(dc, null, clock, true);
         // Date
         drawDate(dc, short, true);
         // Week
         drawWeek(dc, short, medium, true);
+        // Notifications
+        drawSimpleNotification(dc, device);
+        // Battery
+        drawCriticalBattery(dc, stats);
 
     }
 
@@ -543,7 +557,6 @@ class WatchView extends WatchUi.WatchFace {
         // Low Power
         if (lpm) {
             colour = COLOUR_DEFAULT_LPM;
-            seconds_offset = 0;
         }
 
         // Hours and Minutes
@@ -562,28 +575,41 @@ class WatchView extends WatchUi.WatchFace {
 
     function drawSecondsTimezone(dc, greg, clock, lpm) {
 
+        // Colour
+        var colour = COLOUR_DEFAULT;
+
         // Offsets
         var offset = 7;
         var edge = 8;
         var fix = 0.5;
 
-        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
+        // Low Power
+        if (lpm) {
+            colour = COLOUR_DEFAULT_LPM;
+            offset = 0;
+            fix = 0;
+        }
 
-        // Seconds
-        dc.drawText(
-            width - coordinator_x(edge),
-            height / 2 - coordinator_y(offset),
-            font_watch_seconds,
-            greg.sec.format("%02d"),
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 
+        if (!lpm) {
+            // Seconds
+            dc.drawText(
+                width - coordinator_x(edge),
+                height / 2 - coordinator_y(offset),
+                font_watch_seconds,
+                greg.sec.format("%02d"),
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+            );
+        }
         // Timezone
         dc.drawText(
             width - coordinator_x(edge),
             height / 2 + coordinator_y(offset - fix),
             font_64,
             militaryTimezone(clock.timeZoneOffset),
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+        );
 
     }
 
@@ -700,13 +726,29 @@ class WatchView extends WatchUi.WatchFace {
 
     }
 
+    function drawSimpleNotification(dc, device) {
+
+        if (device.notificationCount >= 1) {
+            // Icon Compensation
+            var compensationY = 0.5;
+
+            dc.setColor(COLOUR_DEFAULT_LPM, Graphics.COLOR_TRANSPARENT);
+            dc.drawBitmap(
+                (width / 2),
+                height - coordinator_y(LPM_VERTICAL - compensationY) - (ICON_SIZE / 2.0),
+                bitmap_message
+            );
+        }
+
+    }
+
     function drawNotifications(dc, device) {
 
         // Icon Compensation
         var compensationY = 0.5;
 
         dc.drawBitmap(
-            (width / 2) - coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) - ICON_SIZE,
+            (width / 2) - coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) - ICON_SIZE - coordinator_x(BOTTOM_ROW_WEIGHT),
             height - coordinator_y(BOTTOM_ROW_VERTICAL - compensationY) - (ICON_SIZE / 2.0),
             bitmap_message
         );
@@ -714,11 +756,10 @@ class WatchView extends WatchUi.WatchFace {
         dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
-            (width / 2) - coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) - ICON_SIZE - coordinator_x(BOTTOM_ROW_ICON_SPACING),
+            (width / 2) - coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) - ICON_SIZE - coordinator_x(BOTTOM_ROW_ICON_SPACING) - coordinator_x(BOTTOM_ROW_WEIGHT),
             height - coordinator_y(BOTTOM_ROW_VERTICAL),
             font_48,
-            // device.notificationCount,
-            60,
+            device.notificationCount,
             Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 
@@ -729,7 +770,7 @@ class WatchView extends WatchUi.WatchFace {
         var compensationY = 0.5;
 
         dc.drawBitmap(
-            (width / 2) + coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0),
+            (width / 2) + coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) - coordinator_x(BOTTOM_ROW_WEIGHT),
             height - coordinator_y(BOTTOM_ROW_VERTICAL - compensationY) - (ICON_SIZE / 2.0),
             bitmap_pulse
         );
@@ -737,13 +778,27 @@ class WatchView extends WatchUi.WatchFace {
         dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
-            (width / 2) + coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) + ICON_SIZE + coordinator_x(BOTTOM_ROW_ICON_SPACING),
+            (width / 2) + coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) + ICON_SIZE + coordinator_x(BOTTOM_ROW_ICON_SPACING) - coordinator_x(BOTTOM_ROW_WEIGHT),
             height - coordinator_y(BOTTOM_ROW_VERTICAL),
             font_48,
-            // heart,
-            101,
+            heart,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
+
+    }
+
+    function drawCriticalBattery(dc, stats) {
+
+        if (stats.battery < BATTERY_CRITICAL) {
+            dc.setColor(COLOUR_DEFAULT_LPM, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(
+                (width / 2),
+                height - coordinator_y(2),
+                font_32,
+                "!",
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+            );
+        }
 
     }
 
