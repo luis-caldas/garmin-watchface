@@ -24,7 +24,7 @@ class WatchView extends WatchUi.WatchFace {
     const STEP = 100.0;
 
     // Visual
-    const COLOUR_LINE = 0x201A1A;
+    const COLOUR_LINE = 0x1A1A1A;
     const COLOUR_SECONDARY = 0x0A0A06;
     const COLOUR_BACKGROUND = Graphics.COLOR_BLACK;
     const COLOUR_DEFAULT = Graphics.COLOR_WHITE;
@@ -85,7 +85,7 @@ class WatchView extends WatchUi.WatchFace {
     // Times
     const MORNING_TIME = 6;
     const AFTERNOON_TIME = 12;
-    const EVENING_TIME = 15;
+    const EVENING_TIME = 18;
     const NIGHT_TIME = 22;
     const MORNING_WORD = "Morning";
     const AFTERNOON_WORD = "Afternoon";
