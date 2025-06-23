@@ -789,7 +789,7 @@ class WatchView extends WatchUi.WatchFace {
 
     function drawCriticalBattery(dc, stats) {
 
-        if (stats.battery < BATTERY_CRITICAL) {
+        if (stats.battery < BATTERY_CRITICAL && !stats.charging) {
             dc.setColor(COLOUR_DEFAULT_LPM, Graphics.COLOR_TRANSPARENT);
             dc.drawText(
                 (width / 2),
@@ -805,6 +805,7 @@ class WatchView extends WatchUi.WatchFace {
     function drawBattery(dc, stats) {
         // Battery
         var battery = stats.battery;
+        var charging = stats.charging;
 
         // Battery size in steps
         var battery_x = 10;
@@ -820,7 +821,11 @@ class WatchView extends WatchUi.WatchFace {
         var max = 0xFF / 2;
         var colour = ((max * (battery / 100)) + max).toNumber();
 
-        var hex = (colour << 16) | (colour << 8) | colour;
+        var hex = 0x20B020;
+
+        if (!charging) {
+            hex = (colour << 16) | (colour << 8) | colour;
+        }
 
         dc.setColor(hex, Graphics.COLOR_TRANSPARENT);
 
@@ -833,7 +838,7 @@ class WatchView extends WatchUi.WatchFace {
         );
 
         // Battery Width
-        dc.setPenWidth(2);
+        dc.setPenWidth(3);
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
@@ -841,15 +846,15 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawRectangle(
             (width / 2) - coordinator_x(battery_x),
             height - coordinator_y(battery_y + edge),
-            coordinator_x(battery_x * 2),
+            coordinator_x(battery_x * 2.0),
             coordinator_y(battery_y)
         );
         // Draw Tip
         dc.drawLine(
-            (width / 2) + coordinator_x(battery_x + 1),
-            height - coordinator_y((battery_y / 2) + edge - 1),
-            (width / 2) + coordinator_x(battery_x + 1),
-            height - coordinator_y((battery_y / 2) + edge + 1)
+            (width / 2) + coordinator_x(battery_x + 1.0),
+            height - coordinator_y((battery_y / 2.0) + edge - 1.0),
+            (width / 2) + coordinator_x(battery_x + 1.0),
+            height - coordinator_y((battery_y / 2.0) + edge + 1.5)
         );
 
     }
