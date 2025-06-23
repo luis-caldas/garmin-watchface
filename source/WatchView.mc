@@ -1,14 +1,9 @@
 // Imports
-using Toybox.Lang;
 using Toybox.Graphics;
 using Toybox.WatchUi;
 using Toybox.System;
-using Toybox.Sensor;
-using Toybox.SensorLogging;
-using Toybox.Activity;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
-using Toybox.Position;
 using Toybox.Weather;
 using Toybox.Activity;
 using Toybox.ActivityMonitor;
