@@ -77,6 +77,17 @@ class WatchView extends WatchUi.WatchFace {
         0   => "Z"
     };
 
+    // Weekdays
+    const WEEK_DAYS = {
+        1 => "SUN",
+        2 => "MON",
+        3 => "TUE",
+        4 => "WED",
+        5 => "THU",
+        6 => "FRI",
+        7 => "SAT"
+    };
+
     // Times
     const MORNING_TIME = 6;
     const AFTERNOON_TIME = 12;
@@ -456,7 +467,6 @@ class WatchView extends WatchUi.WatchFace {
         var moment = Time.now();
         var clock = System.getClockTime();
         var short = Gregorian.info(moment, Time.FORMAT_SHORT);
-        var medium = Gregorian.info(moment, Time.FORMAT_MEDIUM);
 
         // Time
         drawTime(dc, short, true);
@@ -464,7 +474,7 @@ class WatchView extends WatchUi.WatchFace {
         // Date
         drawDate(dc, short, true);
         // Week
-        drawWeek(dc, short, medium, true);
+        drawWeek(dc, short, true);
         // Notifications
         drawSimpleNotification(dc, device);
         // Battery
@@ -487,7 +497,6 @@ class WatchView extends WatchUi.WatchFace {
         // Time
         var moment = Time.now();
         var clock = System.getClockTime();
-        var medium = Gregorian.info(moment, Time.FORMAT_MEDIUM);
         var short = Gregorian.info(moment, Time.FORMAT_SHORT);
 
         // Weather
@@ -523,7 +532,7 @@ class WatchView extends WatchUi.WatchFace {
         drawDate(dc, short, false);
 
         // Week
-        drawWeek(dc, short, medium, false);
+        drawWeek(dc, short, false);
 
         // Battery
         drawBattery(dc, stats);
@@ -648,7 +657,7 @@ class WatchView extends WatchUi.WatchFace {
 
     }
 
-    function drawWeek(dc, short, medium, lpm) {
+    function drawWeek(dc, short, lpm) {
 
         var colour = COLOUR_DEFAULT;
         var spacing = WEEK_VERTICAL;
@@ -675,7 +684,7 @@ class WatchView extends WatchUi.WatchFace {
             (width / 2) - coordinator_x(WEEK_INTERSPACE),
             coordinator_y(spacing),
             font_64,
-            medium.day_of_week.toUpper(),
+            WEEK_DAYS[short.day_of_week],
             Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 
