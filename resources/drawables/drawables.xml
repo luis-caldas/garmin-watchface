@@ -1,14 +1,14 @@
 <drawables xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
     <bitmap id="App" filename="app.svg" dithering="none"/>
-    <bitmap id="Bell" filename="bell.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Bluetooth" filename="bluetooth.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Bolt" filename="bolt.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Calorie" filename="calorie.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Location" filename="location.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Message" filename="message.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Progress" filename="progress.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Pulse" filename="pulse.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Step" filename="step.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Sun" filename="sun.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
-    <bitmap id="Week" filename="week.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="28" scaleY="28"/>
+    <bitmap id="Bell" filename="bell.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Bluetooth" filename="bluetooth.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Bolt" filename="bolt.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Calorie" filename="calorie.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Location" filename="location.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Message" filename="message.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Progress" filename="progress.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Pulse" filename="pulse.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Step" filename="step.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Sun" filename="sun.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
+    <bitmap id="Week" filename="week.svg" dithering="none" automaticPalette="false" packingFormat="png" scaleX="7%" scaleY="7%" scaleRelativeTo="screen" />
 </drawables>

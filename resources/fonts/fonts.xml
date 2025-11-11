@@ -1,9 +1,0 @@
-<resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="http://developer.garmin.com/downloads/connect-iq/resources.xsd">
-    <font id="Courier32" filename="courier-32.fnt" antialias="true"/>
-    <font id="Courier40" filename="courier-40.fnt" antialias="true"/>
-    <font id="Courier48" filename="courier-48.fnt" antialias="true"/>
-    <font id="Courier64" filename="courier-64.fnt" antialias="true"/>
-    <font id="CourierWatch" filename="courier-watch.fnt" antialias="true"/>
-    <font id="CourierWatchSeconds" filename="courier-watch-seconds.fnt" antialias="true"/>
-</resources>

@@ -389,9 +389,9 @@ class WatchView extends WatchUi.WatchFace {
      ******************/
 
     // Fonts
-    var font_32 = null;
-    var font_48 = null;
-    var font_64 = null;
+    var font_tiny = null;
+    var font_small = null;
+    var font_medium = null;
     var font_watch = null;
     var font_watch_seconds = null;
 
@@ -401,12 +401,12 @@ class WatchView extends WatchUi.WatchFace {
     var bitmap_week = null;
 
     function initialiseFonts() {
-        // All of them
-        font_32 = WatchUi.loadResource(Rez.Fonts.Courier32);
-        font_48 = WatchUi.loadResource(Rez.Fonts.Courier48);
-        font_64 = WatchUi.loadResource(Rez.Fonts.Courier64);
-        font_watch = WatchUi.loadResource(Rez.Fonts.CourierWatch);
-        font_watch_seconds = WatchUi.loadResource(Rez.Fonts.CourierWatchSeconds);
+        // All of them;
+        font_tiny = Graphics.FONT_SYSTEM_TINY;
+        font_small = Graphics.FONT_SYSTEM_SMALL;
+        font_medium = Graphics.FONT_SYSTEM_MEDIUM;
+        font_watch = Graphics.FONT_SYSTEM_NUMBER_THAI_HOT;
+        font_watch_seconds = font_medium;
     }
 
     function initialiseBitmaps() {
@@ -571,6 +571,7 @@ class WatchView extends WatchUi.WatchFace {
             font_watch,
             (
                 greg.hour.format("%02d") +
+                " " +
                 greg.min.format("%02d")
             ),
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -610,7 +611,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             width - coordinator_x(edge),
             height / 2 + coordinator_y(offset - fix),
-            font_64,
+            font_medium,
             militaryTimezone(clock.timeZoneOffset),
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
         );
@@ -636,21 +637,21 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             (width / 2) - coordinator_x(DATE_INTERSPACE) + coordinator_x(offset),
             coordinator_y(spacing),
-            font_64,
+            font_medium,
             short.year,
             Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
         );
         dc.drawText(
             (width / 2) + coordinator_x(offset),
             coordinator_y(spacing),
-            font_64,
+            font_medium,
             short.month.format("%02d"),
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
         );
         dc.drawText(
             (width / 2) + coordinator_x(DATE_INTERSPACE) + coordinator_x(offset),
             coordinator_y(spacing),
-            font_64,
+            font_medium,
             short.day.format("%02d"),
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
@@ -683,7 +684,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             (width / 2) - coordinator_x(WEEK_INTERSPACE),
             coordinator_y(spacing),
-            font_64,
+            font_medium,
             WEEK_DAYS[short.day_of_week],
             Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
         );
@@ -692,7 +693,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             (width / 2) + ICON_SIZE + coordinator_x(WEEK_INTERSPACE),
             coordinator_y(spacing),
-            font_64,
+            font_medium,
             iso_week_number(short.year, short.month, short.day),
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
@@ -723,7 +724,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             width / 2,
             height - coordinator_y(MIDDLE_ROW_VERTICAL),
-            font_64,
+            font_medium,
             word.toUpper(),
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
         );
@@ -762,7 +763,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             (width / 2) - coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) - ICON_SIZE - coordinator_x(BOTTOM_ROW_ICON_SPACING) - coordinator_x(BOTTOM_ROW_WEIGHT),
             height - coordinator_y(BOTTOM_ROW_VERTICAL),
-            font_48,
+            font_small,
             device.notificationCount,
             Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
         );
@@ -784,7 +785,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.drawText(
             (width / 2) + coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) + ICON_SIZE + coordinator_x(BOTTOM_ROW_ICON_SPACING) - coordinator_x(BOTTOM_ROW_WEIGHT),
             height - coordinator_y(BOTTOM_ROW_VERTICAL),
-            font_48,
+            font_small,
             heart,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
@@ -798,7 +799,7 @@ class WatchView extends WatchUi.WatchFace {
             dc.drawText(
                 (width / 2),
                 height - coordinator_y(2),
-                font_32,
+                font_tiny,
                 "!",
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
             );
