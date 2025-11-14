@@ -1,15 +1,15 @@
-// Imports
+// Garmin
 using Toybox.Graphics;
 using Toybox.WatchUi;
 using Toybox.System;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 using Toybox.Weather;
-using Toybox.Activity;
-using Toybox.ActivityMonitor;
 
 // Watch Face Class
 class WatchView extends WatchUi.WatchFace {
+
+
 
     /************************
      * Constants & Settings *
@@ -100,7 +100,6 @@ class WatchView extends WatchUi.WatchFace {
     const NORMAL_WORD = "Day";
 
     // Generic
-    const MINUTES_PER_HOUR = 60;
 
     // Info
     const BATTERY_CRITICAL = 10;
@@ -108,6 +107,9 @@ class WatchView extends WatchUi.WatchFace {
     /*************
      * Variables *
      *************/
+
+    // Meta
+    var app = null;
 
     // Low Power Mode
     var lpm = false;
@@ -121,10 +123,6 @@ class WatchView extends WatchUi.WatchFace {
     // Cache
     var acquired = false;
 
-    var last_position = null;
-    var last_time = null;
-    var cache_sunset = null;
-    var cache_sunrise = null;
 
     /************************
      * Formatting Utilities *
@@ -133,6 +131,10 @@ class WatchView extends WatchUi.WatchFace {
     function extract(dc) {
         if (!acquired) {
 
+            // Get app
+            app = Application.getApp();
+
+            // Cache sizes
             width = dc.getWidth();
             height = dc.getHeight();
 
@@ -159,60 +161,6 @@ class WatchView extends WatchUi.WatchFace {
 
         // Get Letter
         return MILITARY_TIMEZONES[single];
-
-    }
-
-    function julian_day(year, month, day) {
-        var a = (14 - month) / 12;
-        var y = (year + 4800 - a);
-        var m = (month + 12 * a - 3);
-        return day + ((153 * m + 2) / 5) + (365 * y) + (y / 4) - (y / 100) + (y / 400) - 32045;
-    }
-
-    function is_leap_year(year) {
-        if (year % 4 != 0) {
-            return false;
-        }
-        else if (year % 100 != 0) {
-            return true;
-        }
-        else if (year % 400 == 0) {
-            return true;
-        }
-        return false;
-    }
-
-    function iso_week_number(year, month, day) {
-
-        // Get Firsts
-        var first_day_of_year = julian_day(year, 1, 1);
-        var given_day_of_year = julian_day(year, month, day);
-
-        var day_of_week = (first_day_of_year + 3) % 7;
-        var week_of_year = (given_day_of_year - first_day_of_year + day_of_week + 4) / 7;
-
-        // End or Beginning
-        if (week_of_year == 53) {
-            if (day_of_week == 6) {
-                return week_of_year;
-            }
-            else if (day_of_week == 5 && is_leap_year(year)) {
-                return week_of_year;
-            }
-            else {
-                return 1;
-            }
-        }
-        // Previous Year
-        else if (week_of_year == 0) {
-            first_day_of_year = julian_day(year - 1, 1, 1);
-            day_of_week = (first_day_of_year + 3) % 7;
-            return (given_day_of_year - first_day_of_year + day_of_week + 4) / 7;
-        }
-        // Old Week
-        else {
-            return week_of_year;
-        }
 
     }
 
@@ -302,85 +250,6 @@ class WatchView extends WatchUi.WatchFace {
             coordinator_x(offset),
             coordinator_y(next)
         );
-
-    }
-
-    /***********
-     * Getters *
-     ***********/
-
-    function getSunriseSunset(moment, short, conditions) {
-
-        // Get Weather
-        if (conditions != null && conditions.observationLocationPosition != null) {
-            // Get Location
-            var location = conditions.observationLocationPosition;
-            var position = location.toGeoString(Position.GEO_MGRS);
-
-            // Time
-            var time = (
-                short.year.format("%04d") +
-                short.month.format("%02d") +
-                short.day.format("%02d")
-            );
-
-            // Cache
-            if (time == last_time && position == last_position) {
-                return [cache_sunrise, cache_sunset];
-            }
-
-            // Get Sunrise & Sunset
-            var sunrise_moment = Weather.getSunrise(location, moment);
-            var sunset_moment  = Weather.getSunset(location, moment);
-            // Extract Information
-            var sunrise_info = Gregorian.info(sunrise_moment, Time.FORMAT_SHORT);
-            var sunset_info = Gregorian.info(sunset_moment, Time.FORMAT_SHORT);
-            // Calculate Minutes
-            var sunrise_minutes = sunrise_info.min + (sunrise_info.hour * MINUTES_PER_HOUR);
-            var sunset_minutes = sunset_info.min + (sunrise_info.hour * MINUTES_PER_HOUR);
-
-            // Set Cache
-            last_time = time;
-            last_position = position;
-            cache_sunrise = sunrise_minutes;
-            cache_sunset = sunset_minutes;
-
-            return [sunrise_minutes, sunset_minutes];
-
-        }
-
-        return null;
-
-    }
-
-    function getHeart(info) {
-
-        // Nothing
-        var no_heart = "-";
-
-        // If in activity
-        if (info != null) {
-            var heart_rate = info.currentHeartRate;
-            if (heart_rate == null) {
-                return no_heart;
-            }
-            return heart_rate;
-        }
-
-        // Else History
-        var heart_history = ActivityMonitor.getHeartRateHistory(null, false);
-        var now = heart_history.next();
-
-        // Catch Errors
-        if (now == null) {
-            return no_heart;
-        }
-        if (now.heartRate == ActivityMonitor.INVALID_HR_SAMPLE) {
-            return no_heart;
-        }
-
-        // Return Rate
-        return now.heartRate;
 
     }
 
@@ -510,7 +379,7 @@ class WatchView extends WatchUi.WatchFace {
         var device = System.getDeviceSettings();
 
         // Own
-        var heart = getHeart(info);
+        var heart = Getters.getHeart(info);
 
         /*
          * Draw
@@ -520,6 +389,7 @@ class WatchView extends WatchUi.WatchFace {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
         // Separations
+
         edgeRectangle(dc, false, false, 15, 50, 63);
         separationRectangle(dc, 0, 35);
         separationRectangle(dc, 65, 90);
@@ -694,7 +564,7 @@ class WatchView extends WatchUi.WatchFace {
             (width / 2) + ICON_SIZE + coordinator_x(WEEK_INTERSPACE),
             coordinator_y(spacing),
             font_medium,
-            iso_week_number(short.year, short.month, short.day),
+            WeekNumber.weekNumber(short.year, short.month, short.day),
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
         );
 

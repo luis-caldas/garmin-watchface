@@ -1,0 +1,8 @@
+<settings>
+
+    <!-- Background -->
+    <setting propertyKey="@Properties.FlatBackground" title="@Strings.FlatBackground">
+        <settingConfig type="boolean"/>
+    </setting>
+
+</settings>
