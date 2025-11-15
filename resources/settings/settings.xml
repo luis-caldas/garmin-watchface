@@ -1,0 +1,25 @@
+<settings>
+
+    <!-- Background -->
+    <setting propertyKey="@Properties.FlatBackground" title="@Strings.FlatBackground">
+        <settingConfig type="boolean"/>
+    </setting>
+
+    <!-- Roundel -->
+    <setting propertyKey="@Properties.Roundel" title="@Strings.Roundel">
+        <settingConfig type="boolean"/>
+    </setting>
+
+    <!-- Background Colours -->
+    <setting propertyKey="@Properties.BackgroundColour" title="@Strings.BackgroundColour">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.ColourNone</listEntry>
+            <listEntry value="1">@Strings.ColourRed</listEntry>
+            <listEntry value="2">@Strings.ColourYellow</listEntry>
+            <listEntry value="3">@Strings.ColourGreen</listEntry>
+            <listEntry value="4">@Strings.ColourBlue</listEntry>
+            <listEntry value="5">@Strings.ColourPurple</listEntry>
+        </settingConfig>
+    </setting>
+
+</settings>

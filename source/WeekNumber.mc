@@ -1,11 +1,16 @@
 module WeekNumber {
 
-    // Cache
+    /*********
+     * Cache *
+     *********/
+
     var cache = null;
     var value = null;
 
+    /***********
+     * Methods *
+     ***********/
 
-    // Methods
     function weekNumber(year, month, day) {
 
         var comparator = [year, month, day];
@@ -18,7 +23,6 @@ module WeekNumber {
 
         return value;
     }
-
 
     function julianDay(year, month, day) {
         var a = (14 - month) / 12;

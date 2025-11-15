@@ -50,6 +50,9 @@ in pkgs.mkShell {
     libjpeg8
     libpng
 
+    # Networking
+    glib-networking
+
     # Extra
     libsecret
     expat
@@ -76,5 +79,9 @@ in pkgs.mkShell {
     stdenv.cc.cc.lib
 
   ]);
+
+  shellHook = ''
+    export GIO_MODULE_DIR=${pkgs.glib-networking}/lib/gio/modules/
+  '';
 
 }

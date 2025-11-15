@@ -1,319 +1,59 @@
 // Garmin
-using Toybox.Graphics;
 using Toybox.WatchUi;
-using Toybox.System;
-using Toybox.Time;
 using Toybox.Time.Gregorian;
-using Toybox.Weather;
+using Toybox.Application.Properties;
 
 // Watch Face Class
 class WatchView extends WatchUi.WatchFace {
 
-
-
-    /************************
-     * Constants & Settings *
-     ************************/
-
-    // Separation
-    const STEP = 100.0;
-
-    // Visual
-    const COLOUR_LINE = 0x1A1A1A;
-    const COLOUR_SECONDARY = 0x0A0A06;
-    const COLOUR_BACKGROUND = Graphics.COLOR_BLACK;
-    const COLOUR_DEFAULT = Graphics.COLOR_WHITE;
-    const COLOUR_DEFAULT_LPM = 0xEAEAEA;
-    const COLOUR_ACCENT = Graphics.COLOR_WHITE;
-
-    const WIDTH_LINE = 3.0;
-
-    const LINE_THICKNESS = 2.0;
-
-    const ICON_SIZE = 28;
-
-    const MIDDLE_ROW_VERTICAL = 28.0;
-
-    const BOTTOM_ROW_ICON_SPACING = 3.0;
-    const BOTTOM_ROW_INTERSPACE = 10.0;
-    const BOTTOM_ROW_VERTICAL = 16.0;
-    const BOTTOM_ROW_WEIGHT = 3.0;
-
-    const DATE_VERTICAL = 26.0;
-    const DATE_INTERSPACE = 12.0;
-
-    const LPM_VERTICAL = 18.0;
-
-    const WEEK_VERTICAL = 13.0;
-    const WEEK_INTERSPACE = 7.0;
-
-    // Data
-    const MILITARY_TIMEZONES = {
-        1   => "A",
-        2   => "B",
-        3   => "C",
-        4   => "D",
-        5   => "E",
-        6   => "F",
-        7   => "G",
-        8   => "H",
-        9   => "I",
-        10  => "K",
-        11  => "L",
-        12  => "M",
-        13  => "N",
-        -1  => "N",
-        -2  => "O",
-        -3  => "P",
-        -4  => "Q",
-        -5  => "R",
-        -6  => "S",
-        -7  => "T",
-        -8  => "U",
-        -9  => "V",
-        -10 => "W",
-        -11 => "X",
-        -12 => "Y",
-        0   => "Z"
-    };
-
-    // Weekdays
-    const WEEK_DAYS = {
-        1 => "SUN",
-        2 => "MON",
-        3 => "TUE",
-        4 => "WED",
-        5 => "THU",
-        6 => "FRI",
-        7 => "SAT"
-    };
-
-    // Times
-    const MORNING_TIME = 6;
-    const AFTERNOON_TIME = 12;
-    const EVENING_TIME = 18;
-    const NIGHT_TIME = 22;
-    const MORNING_WORD = "Morning";
-    const AFTERNOON_WORD = "Afternoon";
-    const EVENING_WORD = "Evening";
-    const NIGHT_WORD = "Night";
-    const NORMAL_WORD = "Day";
-
-    // Generic
-
-    // Info
-    const BATTERY_CRITICAL = 10;
-
-    /*************
-     * Variables *
-     *************/
-
-    // Meta
-    var app = null;
-
-    // Low Power Mode
-    var lpm = false;
-
-    // View Sizes
-    var width = null;
-    var height = null;
-    var step_x = null;
-    var step_y = null;
+    /**********
+     * States *
+     **********/
 
     // Cache
     var acquired = false;
 
-
-    /************************
-     * Formatting Utilities *
-     ************************/
-
-    function extract(dc) {
-        if (!acquired) {
-
-            // Get app
-            app = Application.getApp();
-
-            // Cache sizes
-            width = dc.getWidth();
-            height = dc.getHeight();
-
-            step_x = width / STEP;
-            step_y = height / STEP;
-
-            // Update flag
-            acquired = true;
-        }
-    }
-
-    function coordinator_x(size_x) {
-        return step_x * size_x;
-    }
-
-    function coordinator_y(size_y) {
-        return step_y * size_y;
-    }
-
-    function militaryTimezone(seconds_offset) {
-
-        // Calculate Timezone
-        var single = seconds_offset / Time.Gregorian.SECONDS_PER_HOUR;
-
-        // Get Letter
-        return MILITARY_TIMEZONES[single];
-
-    }
-
-    /************
-     * Printing *
-     ************/
-
-    function edgeRectangle(dc, left, black, size, beginning, end) {
-
-        var start = null;
-        var colour = COLOUR_LINE;
-
-        // Which Edge
-        if (left) {
-            start = 0;
-        } else {
-            start = width - coordinator_x(size);
-        }
-
-        // If Black
-        if (black) {
-            colour = COLOUR_BACKGROUND;
-        }
-
-        // Draw Separation Rectangle
-        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-
-        dc.fillRectangle(
-            start,
-            coordinator_y(beginning),
-            coordinator_x(size),
-            coordinator_y(end - beginning)
-        );
-
-    }
-
-    function inBetweenSeparationRectangle(dc, start, end, location, thickness) {
-
-        // Draw Separation Rectangle
-        dc.setColor(COLOUR_BACKGROUND, Graphics.COLOR_TRANSPARENT);
-
-        dc.fillRectangle(
-            coordinator_x(location + (thickness / 2.0)),
-            coordinator_y(start),
-            coordinator_x(thickness),
-            coordinator_y(end - start)
-        );
-    }
-
-    function separationRectangle(dc, start, end) {
-
-        // Draw Separation Rectangle
-        dc.setColor(COLOUR_LINE, Graphics.COLOR_TRANSPARENT);
-
-        dc.fillRectangle(
-            0,
-            coordinator_y(start),
-            width,
-            coordinator_y(end - start)
-        );
-    }
-
-    function separationLine(dc, index) {
-
-        // Draw Separation Line
-        dc.setColor(COLOUR_LINE, Graphics.COLOR_TRANSPARENT);
-        dc.setPenWidth(WIDTH_LINE);
-
-        dc.drawLine(
-            0,
-            coordinator_y(index),
-            width,
-            coordinator_y(index)
-        );
-
-    }
-
-    function inBetweenSeparationLines(dc, index, next, offset) {
-
-        // Draw
-        dc.setColor(COLOUR_LINE, Graphics.COLOR_TRANSPARENT);
-        dc.setPenWidth(WIDTH_LINE);
-
-        dc.drawLine(
-            coordinator_x(offset),
-            coordinator_y(index),
-            coordinator_x(offset),
-            coordinator_y(next)
-        );
-
-    }
+    // Low Power Mode
+    var lpm = false;
 
     /******************
      * Initialisation *
      ******************/
 
-    // Fonts
-    var font_tiny = null;
-    var font_small = null;
-    var font_medium = null;
-    var font_watch = null;
-    var font_watch_seconds = null;
-
-    // Bitmaps
-    var bitmap_pulse = null;
-    var bitmap_message = null;
-    var bitmap_week = null;
-
-    function initialiseFonts() {
-        // All of them;
-        font_tiny = Graphics.FONT_SYSTEM_TINY;
-        font_small = Graphics.FONT_SYSTEM_SMALL;
-        font_medium = Graphics.FONT_SYSTEM_MEDIUM;
-        font_watch = Graphics.FONT_SYSTEM_NUMBER_THAI_HOT;
-        font_watch_seconds = font_medium;
-    }
-
-    function initialiseBitmaps() {
-        bitmap_pulse = WatchUi.loadResource(Rez.Drawables.Pulse);
-        bitmap_message = WatchUi.loadResource(Rez.Drawables.Message);
-        bitmap_week = WatchUi.loadResource(Rez.Drawables.Week);
-    }
-
-    /********
-     * Meta *
-     ********/
-
     // Constructor
     function initialize() {
         WatchFace.initialize();
-        initialiseFonts();
-        initialiseBitmaps();
+        initialiseStart();
     }
 
     // Power Modes
-    function onEnterSleep() {
-        lpm = true;
-    }
-
-    function onExitSleep() {
-        lpm = false;
-    }
+    function onEnterSleep() { lpm = true;  }
+    function onExitSleep()  { lpm = false; }
 
     // Updates
-    function onUpdate(dc) {
-        if (!lpm) {
-            myUpdate(dc);
-        } else {
-            myLPMUpdate(dc);
-        }
-    }
     function onPartialUpdate(dc) {
         onUpdate(dc);
+    }
+    function onUpdate(dc) {
+        View.onUpdate(dc);
+        initialiseOnce(dc);
+        if (!lpm) { myUpdate(dc);    }
+        else      { myLPMUpdate(dc); }
+    }
+
+    function initialiseStart() {
+        Drawing.initialiseStart();
+    }
+
+    function initialiseOnce(dc) {
+        // Only run once at the start
+        if (!acquired) {
+            // Cache sizes
+            Drawing.initialise(dc.getWidth(), dc.getHeight());
+            // Update flag
+            acquired = true;
+        }
+
     }
 
     /***********
@@ -321,12 +61,6 @@ class WatchView extends WatchUi.WatchFace {
      ***********/
 
     function myLPMUpdate(dc) {
-
-        // Redraw Layout
-        View.onUpdate(dc);
-
-        // Update Sizing
-        extract(dc);
 
         // Needed
         var stats = System.getSystemStats();
@@ -338,16 +72,16 @@ class WatchView extends WatchUi.WatchFace {
         var short = Gregorian.info(moment, Time.FORMAT_SHORT);
 
         // Time
-        drawTime(dc, short, true);
-        drawSecondsTimezone(dc, null, clock, true);
+        Drawing.drawTime(dc, short, true);
+        Drawing.drawSecondsTimezone(dc, null, clock, true);
         // Date
-        drawDate(dc, short, true);
+        Drawing.drawDate(dc, short, true);
         // Week
-        drawWeek(dc, short, true);
+        Drawing.drawWeek(dc, short, true);
         // Notifications
-        drawSimpleNotification(dc, device);
+        Drawing.drawSimpleNotification(dc, device);
         // Battery
-        drawCriticalBattery(dc, stats);
+        Drawing.drawCriticalBattery(dc, stats);
 
     }
 
@@ -356,12 +90,6 @@ class WatchView extends WatchUi.WatchFace {
         /*
          * Setup
          */
-
-        // Redraw Layout
-        View.onUpdate(dc);
-
-        // Update Sizing
-        extract(dc);
 
         // Time
         var moment = Time.now();
@@ -389,348 +117,33 @@ class WatchView extends WatchUi.WatchFace {
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
         // Separations
-
-        edgeRectangle(dc, false, false, 15, 50, 63);
-        separationRectangle(dc, 0, 35);
-        separationRectangle(dc, 65, 90);
+        if (!Properties.getValue("FlatBackground")) {
+            Drawing.rectangleEdge(dc, false, false, Configuration.BOX_EDGE_SIZE, Configuration.BOX_EDGE_TOP, Configuration.BOX_EDGE_BOTTOM);
+            Drawing.rectangleSeparation(dc, 0, Configuration.BOX_REACH_TOP);
+            Drawing.rectangleSeparation(dc, Configuration.BOX_REACH_BOTTOM, Configuration.BOX_BATTERY_OFFSET);
+        }
 
         // Time
-        drawTime(dc, short, false);
-        drawSecondsTimezone(dc, short, clock, false);
+        Drawing.drawTime(dc, short, false);
+        Drawing.drawSecondsTimezone(dc, short, clock, false);
 
         // Date
-        drawDate(dc, short, false);
+        Drawing.drawDate(dc, short, false);
 
         // Week
-        drawWeek(dc, short, false);
+        Drawing.drawWeek(dc, short, false);
 
         // Battery
-        drawBattery(dc, stats);
+        Drawing.drawBattery(dc, stats);
 
         // Word
-        drawWord(dc, short);
+        Drawing.drawWord(dc, short);
 
         // Notifications
-        drawNotifications(dc, device);
+        Drawing.drawNotifications(dc, device);
 
         // Heart
-        drawHeart(dc, heart);
-
-    }
-
-    /******************
-     * Draw Functions *
-     ******************/
-
-    function drawTime(dc, greg, lpm) {
-
-        var colour = COLOUR_DEFAULT;
-
-        var seconds_offset = coordinator_x(8);
-
-        // Low Power
-        if (lpm) {
-            colour = COLOUR_DEFAULT_LPM;
-        }
-
-        // Hours and Minutes
-        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(
-            (width / 2) - seconds_offset,
-            height / 2,
-            font_watch,
-            (
-                greg.hour.format("%02d") +
-                " " +
-                greg.min.format("%02d")
-            ),
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-
-    }
-
-    function drawSecondsTimezone(dc, greg, clock, lpm) {
-
-        // Colour
-        var colour = COLOUR_DEFAULT;
-
-        // Offsets
-        var offset = 7;
-        var edge = 8;
-        var fix = 0.5;
-
-        // Low Power
-        if (lpm) {
-            colour = COLOUR_DEFAULT_LPM;
-            offset = 0;
-            fix = 0;
-        }
-
-        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-
-        if (!lpm) {
-            // Seconds
-            dc.drawText(
-                width - coordinator_x(edge),
-                height / 2 - coordinator_y(offset),
-                font_watch_seconds,
-                greg.sec.format("%02d"),
-                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-            );
-        }
-        // Timezone
-        dc.drawText(
-            width - coordinator_x(edge),
-            height / 2 + coordinator_y(offset - fix),
-            font_medium,
-            militaryTimezone(clock.timeZoneOffset),
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-        );
-
-    }
-
-    function drawDate(dc, short, lpm) {
-
-        var colour = COLOUR_DEFAULT;
-        var spacing = DATE_VERTICAL;
-
-        // Low Power
-        if (lpm) {
-            colour = COLOUR_DEFAULT_LPM;
-            spacing = LPM_VERTICAL;
-        }
-
-        // Offset
-        var offset = 7.0;
-
-        // General
-        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(
-            (width / 2) - coordinator_x(DATE_INTERSPACE) + coordinator_x(offset),
-            coordinator_y(spacing),
-            font_medium,
-            short.year,
-            Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-        );
-        dc.drawText(
-            (width / 2) + coordinator_x(offset),
-            coordinator_y(spacing),
-            font_medium,
-            short.month.format("%02d"),
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-        );
-        dc.drawText(
-            (width / 2) + coordinator_x(DATE_INTERSPACE) + coordinator_x(offset),
-            coordinator_y(spacing),
-            font_medium,
-            short.day.format("%02d"),
-            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-        );
-
-    }
-
-    function drawWeek(dc, short, lpm) {
-
-        var colour = COLOUR_DEFAULT;
-        var spacing = WEEK_VERTICAL;
-
-        // Low Power
-        if (lpm) {
-            colour = COLOUR_DEFAULT_LPM;
-            spacing = 100 - LPM_VERTICAL;
-        }
-
-        dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-
-        // Icon
-        if (!lpm) {
-            dc.drawBitmap(
-                (width / 2),
-                coordinator_y(spacing) - (ICON_SIZE / 2),
-                bitmap_week
-            );
-        }
-
-        // Plain Weekday
-        dc.drawText(
-            (width / 2) - coordinator_x(WEEK_INTERSPACE),
-            coordinator_y(spacing),
-            font_medium,
-            WEEK_DAYS[short.day_of_week],
-            Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-        );
-
-        // Week of Year
-        dc.drawText(
-            (width / 2) + ICON_SIZE + coordinator_x(WEEK_INTERSPACE),
-            coordinator_y(spacing),
-            font_medium,
-            WeekNumber.weekNumber(short.year, short.month, short.day),
-            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-        );
-
-    }
-
-    function drawWord(dc, short) {
-
-        // Start Word
-        var word = NORMAL_WORD;
-
-        // Calculate Word
-        if (short.hour >= NIGHT_TIME) {
-            word = NIGHT_WORD;
-        } else if (short.hour >= EVENING_TIME) {
-            word = EVENING_WORD;
-        } else if (short.hour >= AFTERNOON_TIME) {
-            word = AFTERNOON_WORD;
-        } else if (short.hour >= MORNING_TIME) {
-            word = MORNING_WORD;
-        } else {
-            word = NIGHT_WORD;
-        }
-
-        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
-
-        // Plain Weekday
-        dc.drawText(
-            width / 2,
-            height - coordinator_y(MIDDLE_ROW_VERTICAL),
-            font_medium,
-            word.toUpper(),
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-        );
-
-    }
-
-    function drawSimpleNotification(dc, device) {
-
-        if (device.notificationCount >= 1) {
-            // Icon Compensation
-            var compensationY = 0.5;
-
-            dc.setColor(COLOUR_DEFAULT_LPM, Graphics.COLOR_TRANSPARENT);
-            dc.drawBitmap(
-                (width / 2),
-                height - coordinator_y(LPM_VERTICAL - compensationY) - (ICON_SIZE / 2.0),
-                bitmap_message
-            );
-        }
-
-    }
-
-    function drawNotifications(dc, device) {
-
-        // Icon Compensation
-        var compensationY = 0.5;
-
-        dc.drawBitmap(
-            (width / 2) - coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) - ICON_SIZE - coordinator_x(BOTTOM_ROW_WEIGHT),
-            height - coordinator_y(BOTTOM_ROW_VERTICAL - compensationY) - (ICON_SIZE / 2.0),
-            bitmap_message
-        );
-
-        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
-
-        dc.drawText(
-            (width / 2) - coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) - ICON_SIZE - coordinator_x(BOTTOM_ROW_ICON_SPACING) - coordinator_x(BOTTOM_ROW_WEIGHT),
-            height - coordinator_y(BOTTOM_ROW_VERTICAL),
-            font_small,
-            device.notificationCount,
-            Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-        );
-
-    }
-
-    function drawHeart(dc, heart) {
-
-        var compensationY = 0.5;
-
-        dc.drawBitmap(
-            (width / 2) + coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) - coordinator_x(BOTTOM_ROW_WEIGHT),
-            height - coordinator_y(BOTTOM_ROW_VERTICAL - compensationY) - (ICON_SIZE / 2.0),
-            bitmap_pulse
-        );
-
-        dc.setColor(COLOUR_DEFAULT, Graphics.COLOR_TRANSPARENT);
-
-        dc.drawText(
-            (width / 2) + coordinator_x(BOTTOM_ROW_INTERSPACE / 2.0) + ICON_SIZE + coordinator_x(BOTTOM_ROW_ICON_SPACING) - coordinator_x(BOTTOM_ROW_WEIGHT),
-            height - coordinator_y(BOTTOM_ROW_VERTICAL),
-            font_small,
-            heart,
-            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-        );
-
-    }
-
-    function drawCriticalBattery(dc, stats) {
-
-        if (stats.battery < BATTERY_CRITICAL && !stats.charging) {
-            dc.setColor(COLOUR_DEFAULT_LPM, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(
-                (width / 2),
-                height - coordinator_y(2),
-                font_tiny,
-                "!",
-                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-            );
-        }
-
-    }
-
-    function drawBattery(dc, stats) {
-        // Battery
-        var battery = stats.battery;
-        var charging = stats.charging;
-
-        // Battery size in steps
-        var battery_x = 10;
-        var battery_y = 6;
-
-        // Offset from edge
-        var edge = 1.5;
-
-        // Battery Ratio
-        var ratio = (battery_x * 2) * (battery / 100);
-
-        // Battery Colour
-        var max = 0xFF / 2;
-        var colour = ((max * (battery / 100)) + max).toNumber();
-
-        var hex = 0x20B020;
-
-        if (!charging) {
-            hex = (colour << 16) | (colour << 8) | colour;
-        }
-
-        dc.setColor(hex, Graphics.COLOR_TRANSPARENT);
-
-        // Battery Percentage
-        dc.fillRectangle(
-            (width / 2) - coordinator_x(battery_x),
-            height - coordinator_y(battery_y + edge),
-            coordinator_x(ratio),
-            coordinator_y(battery_y)
-        );
-
-        // Battery Width
-        dc.setPenWidth(3);
-
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-
-        // Draw Box
-        dc.drawRectangle(
-            (width / 2) - coordinator_x(battery_x),
-            height - coordinator_y(battery_y + edge),
-            coordinator_x(battery_x * 2.0),
-            coordinator_y(battery_y)
-        );
-        // Draw Tip
-        dc.drawLine(
-            (width / 2) + coordinator_x(battery_x + 1.0),
-            height - coordinator_y((battery_y / 2.0) + edge - 1.0),
-            (width / 2) + coordinator_x(battery_x + 1.0),
-            height - coordinator_y((battery_y / 2.0) + edge + 1.5)
-        );
+        Drawing.drawHeart(dc, heart);
 
     }
 

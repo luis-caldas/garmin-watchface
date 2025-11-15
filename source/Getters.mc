@@ -5,11 +5,17 @@ using Toybox.Weather;
 using Toybox.Position;
 using Toybox.ActivityMonitor;
 
-
 module Getters {
 
-    // Const
+    /*************
+     * Constants *
+     *************/
+
     const MINUTES_PER_HOUR = 60;
+
+    /*********
+     * Cache *
+     *********/
 
     // Vars
     var last_position = null;
@@ -19,6 +25,34 @@ module Getters {
     var cache_sunset = null;
     var cache_sunrise = null;
 
+    /***********
+     * Methods *
+     ***********/
+
+    function getHeart(info) {
+
+        // Nothing
+        var no_heart = -1;
+
+        // If in activity
+        if (info != null) {
+            var heart_rate = info.currentHeartRate;
+            if (heart_rate == null) { return no_heart; }
+            return heart_rate;
+        }
+
+        // Else History
+        var heart_history = ActivityMonitor.getHeartRateHistory(null, false);
+        var now = heart_history.next();
+
+        // Catch Errors
+        if (now == null) { return no_heart; }
+        if (now.heartRate == ActivityMonitor.INVALID_HR_SAMPLE) { return no_heart; }
+
+        // Return Rate
+        return now.heartRate;
+
+    }
 
     function getSunriseSunset(moment, short, conditions) {
 
@@ -26,6 +60,7 @@ module Getters {
         if (conditions != null && conditions.observationLocationPosition != null) {
             // Get Location
             var location = conditions.observationLocationPosition;
+            // Convert it to cacheable string
             var position = location.toGeoString(Position.GEO_MGRS);
 
             // Time
@@ -63,37 +98,5 @@ module Getters {
         return null;
 
     }
-
-    function getHeart(info) {
-
-        // Nothing
-        var no_heart = "-";
-
-        // If in activity
-        if (info != null) {
-            var heart_rate = info.currentHeartRate;
-            if (heart_rate == null) {
-                return no_heart;
-            }
-            return heart_rate;
-        }
-
-        // Else History
-        var heart_history = ActivityMonitor.getHeartRateHistory(null, false);
-        var now = heart_history.next();
-
-        // Catch Errors
-        if (now == null) {
-            return no_heart;
-        }
-        if (now.heartRate == ActivityMonitor.INVALID_HR_SAMPLE) {
-            return no_heart;
-        }
-
-        // Return Rate
-        return now.heartRate;
-
-    }
-
 
 }

@@ -1,0 +1,8 @@
+<properties>
+
+    <!-- Visual -->
+    <property id="FlatBackground" type="boolean">false</property>
+    <property id="Roundel" type="boolean">false</property>
+    <property id="BackgroundColour" type="number">0</property>
+
+</properties>
