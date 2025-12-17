@@ -86,6 +86,9 @@ module Configuration {
     const STEP = 100.0;
 
     // === Fonts === //
+
+    const FONT_SCALABLE = "NotoSansSCMedium";
+
     const FONT_WRITING = Graphics.FONT_SYSTEM_LARGE;
     const FONT_TIMEZONE = Graphics.FONT_GLANCE;
     const FONT_NUMBERS = Graphics.FONT_SYSTEM_NUMBER_MILD;
@@ -105,12 +108,22 @@ module Configuration {
 
     // === Sizes === //
 
+    // Reference
+    const REFERENCE_SIZE = 416.0;
+
     // Battery
     const BATTERY_WIDTH = 10;
     const BATTERY_HEIGHT = 6;
 
     // Lines
     const LINE_WIDTH = 3.0;
+
+    // Fonts
+    var FONT_SIZE_WRITING = 36;
+    var FONT_SIZE_TIMEZONE = 32;
+    var FONT_SIZE_NUMBERS = 36;
+    var FONT_SIZE_WATCH = 112;
+    var FONT_SIZE_WATCH_SECONDS = 36;
 
     // === Spacing === //
 
@@ -173,7 +186,7 @@ module Configuration {
 
     // Edge Box
     const BOX_EDGE_SIZE = 18.0;
-    const BOX_EDGE_TOP = 52.0;
+    const BOX_EDGE_TOP = 51.0;
     const BOX_EDGE_BOTTOM = BOX_REACH_BOTTOM - 3.0;
 
     // === Seconds === //

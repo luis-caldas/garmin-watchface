@@ -1,3 +1,4 @@
+using Toybox.Lang;
 using Toybox.Graphics;
 using Toybox.Time;
 using Toybox.WatchUi;
@@ -47,16 +48,19 @@ module Drawing {
         step_x = width / Configuration.STEP;
         step_y = height / Configuration.STEP;
 
+        // Font Radio
+        var ratio = height / Configuration.REFERENCE_SIZE;
+
+        // Fonts
+        font_writing = Graphics.getVectorFont({:face => Configuration.FONT_SCALABLE, :size => Configuration.FONT_SIZE_WRITING * ratio});
+        font_timezone = Graphics.getVectorFont({:face => Configuration.FONT_SCALABLE, :size => Configuration.FONT_SIZE_TIMEZONE * ratio});
+        font_numbers = Graphics.getVectorFont({:face => Configuration.FONT_SCALABLE, :size => Configuration.FONT_SIZE_NUMBERS * ratio});
+        font_watch = Graphics.getVectorFont({:face => Configuration.FONT_SCALABLE, :size => Configuration.FONT_SIZE_WATCH * ratio});
+        font_watch_seconds = Graphics.getVectorFont({:face => Configuration.FONT_SCALABLE, :size => Configuration.FONT_SIZE_WATCH_SECONDS * ratio});
+
     }
 
     function initialiseStart() {
-
-        // Fonts
-        font_writing = Configuration.FONT_WRITING;
-        font_timezone = Configuration.FONT_TIMEZONE;
-        font_numbers = Configuration.FONT_NUMBERS;
-        font_watch = Configuration.FONT_WATCH;
-        font_watch_seconds = Configuration.FONT_WATCH_SECONDS;
 
         // Bitmaps
         bitmap_pulse = WatchUi.loadResource(Rez.Drawables.Pulse);
