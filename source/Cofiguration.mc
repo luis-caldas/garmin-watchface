@@ -87,13 +87,13 @@ module Configuration {
 
     // === Fonts === //
 
-    const FONT_SCALABLE = "NotoSansSCMedium";
+    const FONT_SCALABLE = ["RobotoCondensedRegular", "NotoSansSCMedium"];
 
-    const FONT_WRITING = Graphics.FONT_SYSTEM_LARGE;
-    const FONT_TIMEZONE = Graphics.FONT_GLANCE;
-    const FONT_NUMBERS = Graphics.FONT_SYSTEM_NUMBER_MILD;
-    const FONT_WATCH = Graphics.FONT_SYSTEM_NUMBER_THAI_HOT;
-    const FONT_WATCH_SECONDS = Graphics.FONT_SYSTEM_NUMBER_MILD;
+    const FONT_WRITING = Graphics.FONT_SYSTEM_SMALL;
+    const FONT_TIMEZONE = Graphics.FONT_SYSTEM_SMALL;
+    const FONT_NUMBERS = Graphics.FONT_GLANCE_NUMBER;
+    const FONT_WATCH = Graphics.FONT_SYSTEM_NUMBER_HOT;
+    const FONT_WATCH_SECONDS = Graphics.FONT_GLANCE_NUMBER;
 
     // === Colours === //
 
@@ -187,7 +187,7 @@ module Configuration {
     // Edge Box
     const BOX_EDGE_SIZE = 18.0;
     const BOX_EDGE_TOP = 51.0;
-    const BOX_EDGE_BOTTOM = BOX_REACH_BOTTOM - 3.0;
+    const BOX_EDGE_BOTTOM = BOX_REACH_BOTTOM - 2.0;
 
     // === Seconds === //
 

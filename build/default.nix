@@ -29,7 +29,6 @@ let
 
   oldPkgs = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-25.05.tar.gz";
-    sha256 = "sha256:1qzg2pvbbdbrxfhx40b0z4nm8bdssdfj7k7fmz6hy08133mhk07d";
   }) {};
 
 in pkgs.mkShell {
