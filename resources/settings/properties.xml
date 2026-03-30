@@ -2,6 +2,7 @@
 
     <!-- Visual -->
     <property id="FlatBackground" type="boolean">false</property>
+    <property id="DarkMode" type="boolean">true</property>
     <property id="Roundel" type="boolean">false</property>
     <property id="BackgroundColour" type="number">0</property>
 

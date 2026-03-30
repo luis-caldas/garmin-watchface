@@ -1,4 +1,5 @@
 // Garmin
+using Toybox.Graphics;
 using Toybox.WatchUi;
 using Toybox.Time.Gregorian;
 using Toybox.Application.Properties;
@@ -114,7 +115,7 @@ class WatchView extends WatchUi.WatchFace {
          */
 
         // Base Color
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Theme.getForegroundColour(false), Graphics.COLOR_TRANSPARENT);
 
         // Separations
         if (!Properties.getValue("FlatBackground")) {

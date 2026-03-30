@@ -8,14 +8,14 @@ let
 
     # Info
     pname = "connect-iq-sdk-manager-cli";
-    version = "0.7.1";
+    version = "0.8.4";
 
     # Source
     src = pkgs.fetchFromGitHub {
       owner = "lindell";
       repo = pname;
       rev = "v${version}";
-      hash = "sha256-igiqccFPCqt/OWdCejcAKCp/Jlkf4PWde1OoBrsvq1E=";
+      hash = "sha256-NEzy+lvBAvrapR6lq7k8b/3N4Os3Q7Wx4Vfv5qcjJiU=";
     };
 
     # Disable Tests
@@ -25,6 +25,38 @@ let
     proxyVendor = true;
     vendorHash = "sha256-mr/i4lTLUn8VBHHdyNntPQBgAfcMLlFjL6qhh2r2a7k=";
 
+  };
+
+  fontbm = pkgs.stdenv.mkDerivation rec {
+    pname = "fontbm";
+    version = "0.6.1";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "vladimirgamalyan";
+      repo = "fontbm";
+      rev = "v${version}";
+      hash = "sha256-hkIxwDMrxsZAaBAdCug0kNia/2NHSnAECQItuut+xac=";
+    };
+
+    nativeBuildInputs = [
+      pkgs.cmake
+      pkgs.pkg-config
+    ];
+
+    buildInputs = [
+      pkgs.freetype
+    ];
+
+    cmakeFlags = [
+      "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+    ];
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/bin
+      cp fontbm $out/bin/
+      runHook postInstall
+    '';
   };
 
   oldPkgs = import (builtins.fetchTarball {
@@ -41,6 +73,9 @@ in pkgs.mkShell {
     # SDK Manager
     SDKManager
 
+    # Font
+    fontbm
+
   ];
 
   # Needed Libraries
@@ -49,7 +84,7 @@ in pkgs.mkShell {
     # Needed
     libusb1
     zlib
-    oldPkgs.webkitgtk_4_0
+    webkitgtk_4_1
     xorg.libXxf86vm
     libjpeg8
     libpng

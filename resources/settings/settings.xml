@@ -5,6 +5,11 @@
         <settingConfig type="boolean"/>
     </setting>
 
+    <!-- Dark Mode -->
+    <setting propertyKey="@Properties.DarkMode" title="@Strings.DarkMode">
+        <settingConfig type="boolean"/>
+    </setting>
+
     <!-- Roundel -->
     <setting propertyKey="@Properties.Roundel" title="@Strings.Roundel">
         <settingConfig type="boolean"/>

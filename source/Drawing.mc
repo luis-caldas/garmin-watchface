@@ -63,11 +63,11 @@ module Drawing {
     function initialiseStart() {
 
         // Fonts
-        font_writing = Configuration.FONT_WRITING;
-        font_timezone = Configuration.FONT_TIMEZONE;
-        font_numbers = Configuration.FONT_NUMBERS;
-        font_watch = Configuration.FONT_WATCH;
-        font_watch_seconds = Configuration.FONT_WATCH_SECONDS;
+        font_writing = WatchUi.loadResource(Rez.Fonts.CourierPrimeWriting);
+        font_timezone = WatchUi.loadResource(Rez.Fonts.CourierPrimeTimezone);
+        font_numbers = WatchUi.loadResource(Rez.Fonts.CourierPrimeNumbers);
+        font_watch = WatchUi.loadResource(Rez.Fonts.CourierPrimeWatch);
+        font_watch_seconds = WatchUi.loadResource(Rez.Fonts.CourierPrimeSeconds);
 
         // Bitmaps
         bitmap_pulse = WatchUi.loadResource(Rez.Drawables.Pulse);
@@ -105,6 +105,10 @@ module Drawing {
         return Configuration.COLOURS[Properties.getValue("BackgroundColour")];
     }
 
+    function drawTintedBitmap(dc, x, y, bitmap, colour) {
+        dc.drawBitmap2(x, y, bitmap, { :tintColor => colour });
+    }
+
     /**********
      * Shapes *
      **********/
@@ -123,7 +127,7 @@ module Drawing {
 
         // If Black
         if (black) {
-            colour = Configuration.COLOUR_DEFAULT_BACKGROUND;
+            colour = Theme.getBackgroundColour();
         }
 
         // Draw Separation Rectangle
@@ -141,7 +145,7 @@ module Drawing {
     function rectangleBetweenSeparation(dc, start, end, location, thickness) {
 
         // Draw Separation Rectangle
-        dc.setColor(Configuration.COLOUR_DEFAULT_BACKGROUND, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Theme.getBackgroundColour(), Graphics.COLOR_TRANSPARENT);
 
         dc.fillRectangle(
             coordinator_x(location + (thickness / 2.0)),
@@ -200,13 +204,13 @@ module Drawing {
 
     function drawTime(dc, greg, lpm) {
 
-        var colour = Configuration.COLOUR_DEFAULT_FOREGROUND;
+        var colour = Theme.getForegroundColour(false);
 
         var seconds_offset = coordinator_x(Configuration.OFFSET_MAIN_TIME);
 
         // Low Power
         if (lpm) {
-            colour = Configuration.COLOUR_DEFAULT_FOREGROUND_LPM;
+            colour = Theme.getForegroundColour(true);
         }
 
         // Hours and Minutes
@@ -227,7 +231,7 @@ module Drawing {
     function drawSecondsTimezone(dc, greg, clock, lpm) {
 
         // Colour
-        var colour = Configuration.COLOUR_DEFAULT_FOREGROUND;
+        var colour = Theme.getForegroundColour(false);
 
         // Offsets
         var offset = Configuration.SPACE_SECONDS_VERTICAL;
@@ -235,7 +239,7 @@ module Drawing {
 
         // Low Power
         if (lpm) {
-            colour = Configuration.COLOUR_DEFAULT_FOREGROUND_LPM;
+            colour = Theme.getForegroundColour(true);
             offset = 0;
             fix = 0;
         }
@@ -266,12 +270,12 @@ module Drawing {
 
     function drawDate(dc, short, lpm) {
 
-        var colour = Configuration.COLOUR_DEFAULT_FOREGROUND;
+        var colour = Theme.getForegroundColour(false);
         var spacing = Configuration.SPACE_TOP_BOTTOM_ROW;
 
         // Low Power
         if (lpm) {
-            colour = Configuration.COLOUR_DEFAULT_FOREGROUND_LPM;
+            colour = Theme.getForegroundColour(true);
             spacing = Configuration.LPM_TOP_ROW;
         }
 
@@ -297,7 +301,7 @@ module Drawing {
 
     function drawWeek(dc, short, lpm) {
 
-        var colour = Configuration.COLOUR_DEFAULT_FOREGROUND;
+        var colour = Theme.getForegroundColour(false);
         var spacing = Configuration.SPACE_TOP_TOP_ROW;
 
         // Low Power
@@ -310,10 +314,12 @@ module Drawing {
 
         // Icon
         if (!lpm) {
-            dc.drawBitmap(
+            drawTintedBitmap(
+                dc,
                 halfWidth - (bitmap_week_size / 2),
                 coordinator_y(spacing) - (bitmap_week_size / 2),
-                bitmap_week
+                bitmap_week,
+                colour
             );
         }
 
@@ -355,7 +361,7 @@ module Drawing {
             word = Configuration.NIGHT_WORD;
         }
 
-        dc.setColor(Configuration.COLOUR_DEFAULT_FOREGROUND, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Theme.getForegroundColour(false), Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
             width / 2,
@@ -373,11 +379,13 @@ module Drawing {
             // Icon Compensation
             var compensationY = 0.5;
 
-            dc.setColor(Configuration.COLOUR_DEFAULT_FOREGROUND_LPM, Graphics.COLOR_TRANSPARENT);
-            dc.drawBitmap(
+            dc.setColor(Theme.getForegroundColour(true), Graphics.COLOR_TRANSPARENT);
+            drawTintedBitmap(
+                dc,
                 halfWidth,
                 height - coordinator_y(Configuration.LPM_TOP_ROW - compensationY) - (bitmap_message_size / 2.0),
-                bitmap_message
+                bitmap_message,
+                Theme.getForegroundColour(true)
             );
         }
 
@@ -393,13 +401,15 @@ module Drawing {
             notifications = 99;
         }
 
-        dc.drawBitmap(
+        drawTintedBitmap(
+            dc,
             halfWidth - bitmap_message_size - coordinator_x(Configuration.INTERSPACE_BOTTOM_BOTTOM_ROW + Configuration.INTERSPACE_BOTTOM_BOTTOM_SKEW),
             coordinator_y(Configuration.SPACE_BOTTOM_BOTTOM_ROW) - (bitmap_message_size / 2.0),
-            bitmap_message
+            bitmap_message,
+            Theme.getForegroundColour(false)
         );
 
-        dc.setColor(Configuration.COLOUR_DEFAULT_FOREGROUND, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Theme.getForegroundColour(false), Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
             halfWidth - bitmap_message_size - coordinator_x(Configuration.INTERSPACE_BOTTOM_BOTTOM_ROW + Configuration.INTERSPACE_BOTTOM_BOTTOM_ROW_MORE + Configuration.INTERSPACE_BOTTOM_BOTTOM_SKEW),
@@ -428,13 +438,15 @@ module Drawing {
             shower = beats;
         }
 
-        dc.drawBitmap(
+        drawTintedBitmap(
+            dc,
             halfWidth + coordinator_x(Configuration.INTERSPACE_BOTTOM_BOTTOM_ROW - Configuration.INTERSPACE_BOTTOM_BOTTOM_SKEW),
             coordinator_y(Configuration.SPACE_BOTTOM_BOTTOM_ROW) - (bitmap_pulse_size / 2.0),
-            bitmap_pulse
+            bitmap_pulse,
+            Theme.getForegroundColour(false)
         );
 
-        dc.setColor(Configuration.COLOUR_DEFAULT_FOREGROUND, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Theme.getForegroundColour(false), Graphics.COLOR_TRANSPARENT);
 
         dc.drawText(
             halfWidth + bitmap_pulse_size + coordinator_x(Configuration.INTERSPACE_BOTTOM_BOTTOM_ROW + Configuration.INTERSPACE_BOTTOM_BOTTOM_ROW_MORE - Configuration.INTERSPACE_BOTTOM_BOTTOM_SKEW),
@@ -449,7 +461,7 @@ module Drawing {
     function drawCriticalBattery(dc, stats) {
 
         if (stats.battery < Configuration.BATTERY_CRITICAL && !stats.charging) {
-            dc.setColor(Configuration.COLOUR_DEFAULT_FOREGROUND_LPM, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(Theme.getForegroundColour(true), Graphics.COLOR_TRANSPARENT);
             dc.drawText(
                 halfWidth,
                 coordinator_y(Configuration.LPM_BATTERY),
@@ -468,30 +480,13 @@ module Drawing {
         var charging = stats.charging;
 
         // Colour of insides
-        var hex = null;
+        var hex = Theme.getBatteryFillColour(battery, charging);
 
         // Battery Float
         var floater = battery / 100;
 
         // Battery Ratio
         var ratio = (Configuration.BATTERY_WIDTH * 2) * floater;
-
-        // Charing Colour
-        if (charging) {
-            hex = Configuration.COLOUR_BATTERY_CHARGING;
-
-        // Dynamic Colour
-        } else {
-
-            // Shade of the battery depending on size
-            var halfColourShade = (
-                (Configuration.COLOUR_BATTERY_MAX_DARK * floater) +
-                Configuration.COLOUR_BATTERY_MAX_DARK
-            ).toNumber();
-
-            hex = (halfColourShade << 16) | (halfColourShade << 8) | halfColourShade;
-
-        }
 
         dc.setColor(hex, Graphics.COLOR_TRANSPARENT);
 
@@ -509,7 +504,7 @@ module Drawing {
         if (battery < Configuration.BATTERY_CRITICAL) {
             dc.setColor(Configuration.COLOUR_BATTERY_CRITICAL, Graphics.COLOR_TRANSPARENT);
         } else {
-            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(Theme.getForegroundColour(false), Graphics.COLOR_TRANSPARENT);
         }
 
         // Draw Box

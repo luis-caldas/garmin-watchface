@@ -7,6 +7,7 @@
     <string id="FlatBackground">Flat Background</string>
     <string id="Roundel">Top Right Roundel</string>
     <string id="BackgroundColour">Background Colour</string>
+    <string id="DarkMode">Dark Mode</string>
 
     <!-- Colours -->
     <string id="ColourNone">None</string>
