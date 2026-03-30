@@ -1,0 +1,16 @@
+info face="Courier Prime" size=-97 bold=1 italic=0 charset="" unicode=1 stretchH=100 smooth=0 aa=1 padding=0,0,0,0 spacing=0,0 outline=0
+common lineHeight=109 base=76 scaleW=512 scaleH=512 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4
+page id=0 file="CourierPrimeWatch_0.png"
+chars count=12
+char id=32   x=0     y=0     width=0     height=0     xoffset=0     yoffset=0     xadvance=58    page=0  chnl=15
+char id=45   x=0     y=468   width=42    height=11    xoffset=8     yoffset=43    xadvance=58    page=0  chnl=15
+char id=48   x=0     y=0     width=46    height=59    xoffset=6     yoffset=18    xadvance=58    page=0  chnl=15
+char id=49   x=0     y=410   width=42    height=58    xoffset=9     yoffset=18    xadvance=58    page=0  chnl=15
+char id=50   x=0     y=293   width=43    height=58    xoffset=7     yoffset=18    xadvance=58    page=0  chnl=15
+char id=51   x=42    y=409   width=41    height=59    xoffset=9     yoffset=18    xadvance=58    page=0  chnl=15
+char id=52   x=0     y=59    width=46    height=58    xoffset=6     yoffset=18    xadvance=58    page=0  chnl=15
+char id=53   x=42    y=351   width=42    height=58    xoffset=8     yoffset=19    xadvance=58    page=0  chnl=15
+char id=54   x=0     y=117   width=45    height=59    xoffset=7     yoffset=18    xadvance=58    page=0  chnl=15
+char id=55   x=0     y=234   width=43    height=59    xoffset=9     yoffset=19    xadvance=58    page=0  chnl=15
+char id=56   x=0     y=351   width=42    height=59    xoffset=8     yoffset=18    xadvance=58    page=0  chnl=15
+char id=57   x=0     y=176   width=44    height=58    xoffset=7     yoffset=19    xadvance=58    page=0  chnl=15

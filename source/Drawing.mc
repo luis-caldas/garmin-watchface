@@ -207,6 +207,7 @@ module Drawing {
         var colour = Theme.getForegroundColour(false);
 
         var seconds_offset = coordinator_x(Configuration.OFFSET_MAIN_TIME);
+        var seconds_offset_fix = coordinator_y(Configuration.OFFSET_MAIN_TIME_FIX);
 
         // Low Power
         if (lpm) {
@@ -217,11 +218,11 @@ module Drawing {
         dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
         dc.drawText(
             halfWidth - seconds_offset,
-            halfHeight,
+            halfHeight + seconds_offset_fix,
             font_watch,
             (
                 greg.hour.format("%02d") +
-                " " +
+                "" +
                 greg.min.format("%02d")
             ),
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);

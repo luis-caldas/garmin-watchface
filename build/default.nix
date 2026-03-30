@@ -1,17 +1,24 @@
 let
 
   # Pkgs
-  pkgs = import <nixpkgs> {};
+  real = import <nixpkgs> {
+    config.allowInsecurePredicate = _: true;
+  };
+
+  pkgs = import (builtins.fetchTarball "https://channels.nixos.org/nixos-24.11/nixexprs.tar.xz") {
+    system = builtins.currentSystem;
+    config.allowInsecurePredicate = _: true;
+  };
 
   # SDK Manager
-  SDKManager = pkgs.buildGoModule rec {
+  SDKManager = real.buildGoModule rec {
 
     # Info
     pname = "connect-iq-sdk-manager-cli";
     version = "0.8.4";
 
     # Source
-    src = pkgs.fetchFromGitHub {
+    src = real.fetchFromGitHub {
       owner = "lindell";
       repo = pname;
       rev = "v${version}";
@@ -27,11 +34,11 @@ let
 
   };
 
-  fontbm = pkgs.stdenv.mkDerivation rec {
+  fontbm = real.stdenv.mkDerivation rec {
     pname = "fontbm";
     version = "0.6.1";
 
-    src = pkgs.fetchFromGitHub {
+    src = real.fetchFromGitHub {
       owner = "vladimirgamalyan";
       repo = "fontbm";
       rev = "v${version}";
@@ -39,17 +46,21 @@ let
     };
 
     nativeBuildInputs = [
-      pkgs.cmake
-      pkgs.pkg-config
+      real.cmake
+      real.pkg-config
     ];
 
     buildInputs = [
-      pkgs.freetype
+      real.freetype
     ];
 
     cmakeFlags = [
       "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
     ];
+
+    postPatch = ''
+      sed -i '/#include <sstream>/a #include <cstdint>' src/FontInfo.h
+    '';
 
     installPhase = ''
       runHook preInstall
@@ -58,10 +69,6 @@ let
       runHook postInstall
     '';
   };
-
-  oldPkgs = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/nixos-25.05.tar.gz";
-  }) {};
 
 in pkgs.mkShell {
 
@@ -84,7 +91,7 @@ in pkgs.mkShell {
     # Needed
     libusb1
     zlib
-    webkitgtk_4_1
+    webkitgtk_4_0
     xorg.libXxf86vm
     libjpeg8
     libpng
@@ -100,7 +107,7 @@ in pkgs.mkShell {
     # Visual
     fontconfig
     freetype
-    libsoup_2_4
+    real.libsoup_2_4
     gdk-pixbuf
     pango
     cairo

@@ -195,14 +195,13 @@ module Configuration {
     // === Seconds === //
 
     const SPACE_SECONDS_EDGE = 10.0;
-    const SPACE_SECONDS_VERTICAL = 5.0;
+    const SPACE_SECONDS_VERTICAL = 6.0;
 
     const SPACE_SECONDS_TIMEZONE = 1.0;
 
     // === Generic === //
 
-    const OFFSET_MAIN_TIME = 10;
-
-
+    const OFFSET_MAIN_TIME = 9.0;
+    const OFFSET_MAIN_TIME_FIX = 1.0;
 
 }
