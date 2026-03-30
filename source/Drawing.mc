@@ -102,7 +102,15 @@ module Drawing {
     }
 
     function getColour() {
-        return Configuration.COLOURS[Properties.getValue("BackgroundColour")];
+        var backgroundColour = Properties.getValue("BackgroundColour");
+
+        // Keep explicit accent choices
+        if (backgroundColour != null && backgroundColour != 0) {
+            return Configuration.COLOURS[backgroundColour];
+        }
+
+        // Default section shade follows the current theme
+        return Theme.isDarkModeEnabled() ? 0x1A1A1A : 0xE5E5E5;
     }
 
     function drawTintedBitmap(dc, x, y, bitmap, colour) {

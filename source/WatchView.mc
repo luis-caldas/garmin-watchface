@@ -31,6 +31,11 @@ class WatchView extends WatchUi.WatchFace {
     function onEnterSleep() { lpm = true;  }
     function onExitSleep()  { lpm = false; }
 
+    // Layout
+    function onLayout(dc) {
+        setLayout([ new Background() ]);
+    }
+
     // Updates
     function onPartialUpdate(dc) {
         onUpdate(dc);
