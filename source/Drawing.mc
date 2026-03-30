@@ -63,11 +63,11 @@ module Drawing {
     function initialiseStart() {
 
         // Fonts
-        font_writing = WatchUi.loadResource(Rez.Fonts.CourierPrimeWriting);
-        font_timezone = WatchUi.loadResource(Rez.Fonts.CourierPrimeTimezone);
-        font_numbers = WatchUi.loadResource(Rez.Fonts.CourierPrimeNumbers);
-        font_watch = WatchUi.loadResource(Rez.Fonts.CourierPrimeWatch);
-        font_watch_seconds = WatchUi.loadResource(Rez.Fonts.CourierPrimeSeconds);
+        font_writing = WatchUi.loadResource(Rez.Fonts.FontWriting);
+        font_timezone = WatchUi.loadResource(Rez.Fonts.FontTimezone);
+        font_numbers = WatchUi.loadResource(Rez.Fonts.FontNumbers);
+        font_watch = WatchUi.loadResource(Rez.Fonts.FontWatch);
+        font_watch_seconds = WatchUi.loadResource(Rez.Fonts.FontSecond);
 
         // Bitmaps
         bitmap_pulse = WatchUi.loadResource(Rez.Drawables.Pulse);

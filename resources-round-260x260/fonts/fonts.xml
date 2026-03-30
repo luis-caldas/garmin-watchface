@@ -1,8 +1,8 @@
 <fonts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
-    <font id="CourierPrimeWriting"  filename="CourierPrimeWriting.fnt" />
-    <font id="CourierPrimeTimezone" filename="CourierPrimeTimezone.fnt" />
-    <font id="CourierPrimeNumbers"  filename="CourierPrimeNumbers.fnt" />
-    <font id="CourierPrimeWatch"    filename="CourierPrimeWatch.fnt" />
-    <font id="CourierPrimeSeconds"  filename="CourierPrimeSeconds.fnt" />
+    <font id="FontWriting"  filename="FontWriting.fnt" />
+    <font id="FontTimezone" filename="FontTimezone.fnt" />
+    <font id="FontNumbers"  filename="FontNumbers.fnt" />
+    <font id="FontWatch"    filename="FontWatch.fnt" />
+    <font id="FontSecond"  filename="FontSecond.fnt" />
 </fonts>

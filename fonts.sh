@@ -99,11 +99,11 @@ write_fonts_xml() {
   cat > "$dir/fonts.xml" <<'XML'
 <fonts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
-    <font id="CourierPrimeWriting"  filename="CourierPrimeWriting.fnt" />
-    <font id="CourierPrimeTimezone" filename="CourierPrimeTimezone.fnt" />
-    <font id="CourierPrimeNumbers"  filename="CourierPrimeNumbers.fnt" />
-    <font id="CourierPrimeWatch"    filename="CourierPrimeWatch.fnt" />
-    <font id="CourierPrimeSeconds"  filename="CourierPrimeSeconds.fnt" />
+    <font id="FontWriting"  filename="FontWriting.fnt" />
+    <font id="FontTimezone" filename="FontTimezone.fnt" />
+    <font id="FontNumbers"  filename="FontNumbers.fnt" />
+    <font id="FontWatch"    filename="FontWatch.fnt" />
+    <font id="FontSecond"  filename="FontSecond.fnt" />
 </fonts>
 XML
 }
@@ -133,11 +133,11 @@ generate_target() {
 
   echo "Generating fonts for $folder (scale $screen)"
 
-  gen_font "$fonts_dir/CourierPrimeWriting"  "$(scale "$WRITING"  "$screen")" "$UPPER"        "256x256,512x512"
-  gen_font "$fonts_dir/CourierPrimeTimezone" "$(scale "$TIMEZONE" "$screen")" "$UPPER"        "256x256,512x512"
-  gen_font "$fonts_dir/CourierPrimeNumbers"  "$(scale "$NUMBERS"  "$screen")" "$DIGITS"       "256x256,512x512"
-  gen_font "$fonts_dir/CourierPrimeWatch"    "$(scale "$WATCH"    "$screen")" "$DIGITS"       "512x512,1024x1024"
-  gen_font "$fonts_dir/CourierPrimeSeconds"  "$(scale "$SECONDS"  "$screen")" "$DIGITS"       "256x256,512x512"
+  gen_font "$fonts_dir/FontWriting"  "$(scale "$WRITING"  "$screen")" "$UPPER"        "256x256,512x512"
+  gen_font "$fonts_dir/FontTimezone" "$(scale "$TIMEZONE" "$screen")" "$UPPER"        "256x256,512x512"
+  gen_font "$fonts_dir/FontNumbers"  "$(scale "$NUMBERS"  "$screen")" "$DIGITS"       "256x256,512x512"
+  gen_font "$fonts_dir/FontWatch"    "$(scale "$WATCH"    "$screen")" "$DIGITS"       "512x512,1024x1024"
+  gen_font "$fonts_dir/FontSecond"  "$(scale "$SECONDS"  "$screen")" "$DIGITS"       "256x256,512x512"
 }
 
 ########
