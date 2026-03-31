@@ -99,11 +99,11 @@ write_fonts_xml() {
   cat > "$dir/fonts.xml" <<'XML'
 <fonts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
-    <font id="FontWriting"  filename="FontWriting.fnt" />
-    <font id="FontTimezone" filename="FontTimezone.fnt" />
-    <font id="FontNumbers"  filename="FontNumbers.fnt" />
-    <font id="FontWatch"    filename="FontWatch.fnt" />
-    <font id="FontSecond"  filename="FontSecond.fnt" />
+    <font id="FontWriting"  filename="FontWriting.fnt"  antialias="true" />
+    <font id="FontTimezone" filename="FontTimezone.fnt" antialias="true" />
+    <font id="FontNumbers"  filename="FontNumbers.fnt"  antialias="true" />
+    <font id="FontWatch"    filename="FontWatch.fnt"    antialias="true" />
+    <font id="FontSecond"   filename="FontSecond.fnt"   antialias="true" />
 </fonts>
 XML
 }
@@ -120,7 +120,8 @@ gen_font() {
     --font-size "$size" \
     --chars-file "$chars" \
     --texture-size "$textures" \
-    --data-format txt
+    --data-format txt \
+    --background-color 0,0,0
 }
 
 generate_target() {
